@@ -29,7 +29,7 @@ class ChangeNumber extends React.Component {
 
   updateInput(evt) {
     this.setState({
-      a: parseInt(evt.target.value)
+      a: isNaN(parseInt(evt.target.value)) ? 0 : parseInt(evt.target.value)
     })
   }
 
