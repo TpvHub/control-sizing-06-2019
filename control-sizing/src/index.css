@@ -3,3 +3,16 @@ body {
   padding: 0;
   font-family: sans-serif;
 }
+
+.form-group {
+	width: 20%;
+	margin: 30px;
+}
+
+.form-group .glyphicon{
+  color: #95d7fc;
+}
+
+input#myNumber {
+  text-align: center;
+}
