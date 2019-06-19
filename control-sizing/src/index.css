@@ -5,8 +5,9 @@ body {
 }
 
 .form-group {
-	width: 20%;
-	margin: 30px;
+	width: 50%;
+  margin: 20px;
+  display: inline-block;
 }
 
 .form-group .glyphicon{
