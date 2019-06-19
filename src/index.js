@@ -15,12 +15,21 @@ class Toggle extends React.Component {
 
   onTodoChange(value){
     value = (isNaN(parseInt(value)) || parseInt(value) < 0) ? 0 : parseInt(value);  
-    this.state.arr = [];
-    for(let i = 0; i < value; i++) {
-      this.state.arr.push(0);
+    let arrOld = this.state.arr;
+    let arrNew = [];
+    if(value <= this.state.value){
+      for(let i = 0; i < value; i++) {
+        arrNew[i] = arrOld[i];
+      }
+    }else{
+      arrNew = this.state.arr;
+      for(let i = 0; i < (value - this.state.value); i++) {
+        arrNew.push(0);
+      }
     }
     this.setState(state => ({
       value: value,
+      arr:arrNew
     }));
   }
   
