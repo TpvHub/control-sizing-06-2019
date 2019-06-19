@@ -12,31 +12,30 @@ class App extends React.Component {
   }
 
   handleInput = event => {
-    let value = event.target.value;
-    if (isNaN(value) || parseInt(value) < 0) {
+    let valueNew = event.target.value;
+    if (isNaN(valueNew) || parseInt(valueNew) < 0) {
       this.setState({
         count: this.state.count
       });
     } else {
-      this.state.values = [];
-      for (let i = 0; i < value; i++) {
-          this.state.values.push(0);
-      }
-      this.setState({ count: parseInt(event.target.value), values: this.state.values });
+      let old = this.state.count;
+      let amout =  valueNew - old;
+      amout <=0 ? this.handleSub(Math.abs(amout)):this.handleAdd(amout);     
     }
   };
 
-  handleAdd = () => {
+  handleAdd = amount => {
     this.setState({
-      count: this.state.count + 1,
-      values: [...this.state.values, 0]
+      count: this.state.count + amount,
+      values: [...this.state.values, ...Array(amount).fill(0)]
     });
   };
 
-  handleSub = () => {
+  handleSub = (amount) => {
     this.setState(state => {
-      state.count = state.count - 1;
-      state.values = state.values.filter((item, i) => state.count !== i);
+      state.count = state.count - amount;
+      //state.values = state.values.filter((item, i) => state.count !== i);
+      state.values = state.values.slice(0,-amount)
       return state;
     });
   };
@@ -100,8 +99,8 @@ class App extends React.Component {
         <div className="App1">
           <Count
             onChange={this.handleInput}
-            onClickAdd={this.handleAdd}
-            onClickSub={this.handleSub}
+            onClickAdd={this.handleAdd.bind(this,1)}
+            onClickSub={this.handleSub.bind(this,1)}
             value={this.state.count}
           />
         </div>
