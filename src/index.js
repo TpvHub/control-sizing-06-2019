@@ -80,7 +80,8 @@ class Sample extends React.Component {
   constructor() {
       super();
       this.state = {
-          count: 0
+          count: 0,
+          counts: {}
       }
   }
   
@@ -99,37 +100,31 @@ class Sample extends React.Component {
       }
       return divList;
   }
-//start
+  
   up = () => {
-    let inputNum = this.state.count+1
-    let counts = {}
-    for (var i = 1; i <= inputNum; i++) {
-      let oldCountObj = counts;
-      counts = {...oldCountObj, [`count_${i}`]: 0}
-    }
+    let currentNumber = this.state.count+1
+    let oldCounts = this.state.counts;
     this.setState({
-      count:  inputNum,
-      counts
+      count:  currentNumber,
+      counts: {...oldCounts, [`count_${currentNumber}`]: 0}
     });
   }
 
   down = () => {
-    let inputNum = this.state.count-1
-    let counts = {}
-    for (var i = 1; i <= inputNum; i++) {
-      let oldCountObj = counts;
-      counts = {...oldCountObj, [`count_${i}`]: 0}
-    }
+    let currentNumber = this.state.count-1
+    let oldCounts = this.state.counts;
     this.setState({
-      count:  inputNum,
-      counts
+      count:  currentNumber,
+      counts: {...oldCounts, [`count_${currentNumber+1}`]: 0}
     });
   }
 
   updateInput = (evt) => {
+    let currentNumber = this.state.count;
     let inputNum = isNaN(parseInt(evt.target.value))? 0 : parseInt(evt.target.value);
-    let counts = {}
+    let counts = this.state.counts;
     for (var i = 1; i <= inputNum; i++) {
+      if(i <= currentNumber) continue;
       let oldCountObj = counts;
       counts = {...oldCountObj, [`count_${i}`]: 0}
     }
@@ -143,7 +138,6 @@ class Sample extends React.Component {
     
     return (evt) => {
       let inputNum = isNaN(parseInt(evt.target.value))? 0 : parseInt(evt.target.value);
-      console.log(index)
       this.setState(state => ({
         count: state.count,
         counts: {...state.counts, [`count_${index}`]:inputNum}
@@ -153,7 +147,7 @@ class Sample extends React.Component {
 
   upSub = (index) => {
     return() => {
-      let inputNum = this.state.counts[`count_${index}`]+1;
+      let inputNum = this.state.counts[`count_${index}`]+index;
       this.setState(state => ({
         count: state.count,
         counts: {...state.counts, [`count_${index}`]:inputNum}
@@ -163,7 +157,7 @@ class Sample extends React.Component {
 
   downSub = (index) => {
     return() => {
-      let inputNum = this.state.counts[`count_${index}`]-1;
+      let inputNum = this.state.counts[`count_${index}`]-index;
       this.setState(state => ({
         count: state.count,
         counts: {...state.counts, [`count_${index}`]:inputNum}
@@ -174,7 +168,7 @@ class Sample extends React.Component {
   display = () => {
     console.log(JSON.stringify(this.state,0,2))
   }
-//end
+  
   render() {
       return (
         <div>
@@ -187,7 +181,7 @@ class Sample extends React.Component {
               +
             </button>
           </div>
-          <button onClick={this.display}>test</button>
+          {/* <button onClick={this.display}>test</button> */}
           <div style={{marginTop: 20+'px'}}>
               { this.getrDivList() }
               
