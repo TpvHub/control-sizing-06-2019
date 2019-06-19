@@ -1,6 +1,7 @@
 import React from "react";
 import "./App.css";
-import $ from "jquery";
+import Count from "./component/count";
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -18,15 +19,14 @@ class App extends React.Component {
     } else this.setState({ count: parseInt(event.target.value) });
   };
 
-  onClickASC = () => {
+  onClickAdd = () => {
     this.setState({
       count: this.state.count + 1,
       values: [...this.state.values, 0]
     });
-    console.log(this.state.values);
   };
 
-  onClickDESC = () => {
+  onClickSub = () => {
     this.setState(state => {
       state.count = state.count - 1;
       state.values = state.values.filter((item, i) => state.count !== i);
@@ -34,7 +34,7 @@ class App extends React.Component {
     });
   };
 
-  onClickChildASC = id => {
+  onClickChildAdd = id => {
     this.setState(
       state => {
         state.values = state.values.map((item, i) => {
@@ -52,7 +52,7 @@ class App extends React.Component {
     );
   };
 
-  onClickChildDESC = id => {
+  onClickChildSub = id => {
     this.setState(state => {
       state.values = state.values.map((item, i) => {
         if (i === id) {
@@ -69,21 +69,22 @@ class App extends React.Component {
     return (
       <div className="App">
         <div className="App1">
-          <button onClick={this.onClickDESC}>-</button>
-          <input
-            type="text"
+          <Count
+            handleChange={this.handleInput}
+            handleClickAdd={this.onClickAdd}
+            handleClickSub={this.onClickSub}
             value={this.state.count}
-            onChange={this.handleInput}
           />
-          <button onClick={this.onClickASC}>+</button>
         </div>
         <div className="App2">
           {this.state.values.map((item, i) => {
             return (
               <div key={i}>
-                <button onClick={this.onClickChildDESC.bind(this, i)}>-</button>
-                <input type="text" value={item} />
-                <button onClick={this.onClickChildASC.bind(this, i)}>+</button>
+                <Count
+                  handleClickAdd={this.onClickChildAdd.bind(this,i)}
+                  handleClickSub={this.onClickChildSub.bind(this,i)}
+                  value={item}
+                />
               </div>
             );
           })}
