@@ -7,13 +7,13 @@ class Count extends React.Component {
   render() {
     return (
       <div>
-        <button onClick={this.props.handleClickSub}>-</button>
+        <button onClick={this.props.onClickSub}>-</button>
         <input
           type="text"
           value={this.props.value}
-          onChange={this.props.handleChange}
+          onChange={this.props.onChange}
         />
-        <button onClick={this.props.handleClickAdd}>+</button>
+        <button onClick={this.props.onClickAdd}>+</button>
       </div>
     );
   }

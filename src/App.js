@@ -12,21 +12,28 @@ class App extends React.Component {
   }
 
   handleInput = event => {
-    if (isNaN(event.target.value)) {
+    let value = event.target.value;
+    if (isNaN(value) || parseInt(value) < 0) {
       this.setState({
-        count: 0
+        count: this.state.count
       });
-    } else this.setState({ count: parseInt(event.target.value) });
+    } else {
+      this.state.values = [];
+      for (let i = 0; i < value; i++) {
+          this.state.values.push(0);
+      }
+      this.setState({ count: parseInt(event.target.value), values: this.state.values });
+    }
   };
 
-  onClickAdd = () => {
+  handleAdd = () => {
     this.setState({
       count: this.state.count + 1,
       values: [...this.state.values, 0]
     });
   };
 
-  onClickSub = () => {
+  handleSub = () => {
     this.setState(state => {
       state.count = state.count - 1;
       state.values = state.values.filter((item, i) => state.count !== i);
@@ -34,7 +41,29 @@ class App extends React.Component {
     });
   };
 
-  onClickChildAdd = id => {
+  handleChildInput = (id, event) => {
+    let temp = event.target.value;
+    if (isNaN(temp)) {
+      this.setState(state => {
+        state.values = state.values.map((item, i) => {
+          return item;
+        });
+        return state;
+      });
+    } else
+      this.setState(state => {
+        state.values = state.values.map((item, i) => {
+          if (i === id) {
+            return parseInt(temp);
+          } else {
+            return item;
+          }
+        });
+        return state;
+      });
+  };
+
+  handleChildAdd = id => {
     this.setState(
       state => {
         state.values = state.values.map((item, i) => {
@@ -52,7 +81,7 @@ class App extends React.Component {
     );
   };
 
-  onClickChildSub = id => {
+  handleChildSub = id => {
     this.setState(state => {
       state.values = state.values.map((item, i) => {
         if (i === id) {
@@ -70,9 +99,9 @@ class App extends React.Component {
       <div className="App">
         <div className="App1">
           <Count
-            handleChange={this.handleInput}
-            handleClickAdd={this.onClickAdd}
-            handleClickSub={this.onClickSub}
+            onChange={this.handleInput}
+            onClickAdd={this.handleAdd}
+            onClickSub={this.handleSub}
             value={this.state.count}
           />
         </div>
@@ -81,8 +110,9 @@ class App extends React.Component {
             return (
               <div key={i}>
                 <Count
-                  handleClickAdd={this.onClickChildAdd.bind(this,i)}
-                  handleClickSub={this.onClickChildSub.bind(this,i)}
+                  onChange={this.handleChildInput.bind(this, i)}
+                  onClickAdd={this.handleChildAdd.bind(this, i)}
+                  onClickSub={this.handleChildSub.bind(this, i)}
                   value={item}
                 />
               </div>
