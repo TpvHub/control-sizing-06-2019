@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './ControlSize.css';
+// import './ControlSize.css';
 
 class ControlSize extends React.Component {
     constructor(props) {

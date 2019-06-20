@@ -11,117 +11,118 @@ class App extends React.Component {
     };
   }
 
-  onTodoChange = (value) => {
-    value = (isNaN(parseInt(value)) || parseInt(value) < 0) ? 0 : parseInt(value);  
+  onTodoChange = (e) => {
+    let value = e.target.value
+    value = (isNaN(parseInt(value)) || parseInt(value) < 0) ? 0 : parseInt(value);
     let arrOld = this.state.arr;
     let arrNew = [];
-    if(value <= this.state.value){
-      arrNew = arrOld.filter((item, index) => index < value);
-    }else{
-      arrNew = this.state.arr;
-      for(let i = 0; i < (value - this.state.value); i++) {
-        arrNew.push(0);
-      }
-    }
+    if(value <= this.state.value)
+      arrNew = arrOld.filter((item,index) => index < value)
+    else
+      arrNew = [...this.state.arr, ...Array(value - this.state.value).fill(0)];
     this.setState(state => ({
       value: value,
-      arr:arrNew
+      arr: arrNew
     }));
   }
-  
-  down = (value_down) => {
+
+  down = () => {
+    const value_down = this.state.value
     let arrNew = [];
     let down = parseInt(value_down) - 1;
     let arrOld = this.state.arr;
-    if(down > 0){
-      arrNew = arrOld.filter((item,index) => index < down);
+    if (down > 0) {
+      arrNew = arrOld.filter((item, index) => index < down);
       this.setState(() => ({
         value: down,
-        arr:arrNew
+        arr: arrNew
       }));
-    }else{
+    } else {
       this.setState(state => ({
         value: 0,
-        arr:arrNew
+        arr: arrNew
       }));
     }
   }
 
-  up(value_up) {
+  up = () => {
+    const value_up = this.state.value;
     let up = parseInt(value_up) + 1;
     let arrNew = [];
     let arrOld = this.state.arr;
-
-    for(let i = 0; i < up; i++) {
-      if(i>=arrOld.length){
-        arrNew.push(0);
-      }else{
-        arrNew[i] = arrOld[i];
-      }
-    }
-
+    arrNew = [...arrOld, ...Array(up-arrOld.length).fill(0)]; 
     this.setState(state => ({
       value: up,
-      arr:arrNew
+      arr: arrNew
     }));
   }
 
-  resetDown = (index,item) => {
-    index = parseInt(index);
-    item = parseInt(item);
-    let arrNew = this.state.arr;
-    arrNew[index] = item - index - 1;
-    this.setState(() => ({
-      arr: arrNew,
-    })); 
+  resetDown = (index, item) => {
+    return () => {
+      index = parseInt(index);
+      item = parseInt(item);
+      let arrNew = this.state.arr;
+      arrNew[index] = item - index - 1;
+      this.setState(() => ({
+        arr: arrNew,
+      }));
+    }
   }
 
-  setUp = (index,item) => {
-    index = parseInt(index);
-    item = parseInt(item);
-    let arrNew = this.state.arr;
-    arrNew[index] = index + item + 1;
-    this.setState(() => ({
-      arr: arrNew,
-    }));    
+  setUp = (index, item) => {
+    return () => {
+      index = parseInt(index);
+      item = parseInt(item);
+      let arrNew = this.state.arr;
+      arrNew[index] = index + item + 1;
+      this.setState(() => ({
+        arr: arrNew,
+      }));
+    }
   }
 
-  onTodoChangeItem = (value,index) => {
-    value = (isNaN(parseInt(value)) || parseInt(value) < 0) ? 0 : parseInt(value);  
-    index = parseInt(index);
-    let arrNew = this.state.arr;
-    arrNew[index] = value;
-    this.setState(() => ({
-      arr: arrNew,
-    })); 
+  onTodoChangeItem = (index) => {
+    return (e) => {
+      let value = e.target.value
+      value = (isNaN(parseInt(value)) || parseInt(value) < 0) ? 0 : parseInt(value);  
+      index = parseInt(index);
+      let arrNew = this.state.arr;
+      arrNew[index] = value;
+      this.setState(() => ({
+        arr: arrNew,
+      })); 
+    }
   }
-  
 
-  render() {  
+
+  render() {
     return (
       <div className="container">
         <div className="col-xs-6 col-sm-6 col-md-8 col-lg-6">
           <div className="form-group">
             <label>Quantity: </label>
             <ControlSize
-              up={()=>this.up(this.state.value)}
               value={this.state.value}
-              onTodoChange={(e) => this.onTodoChange(e.target.value)}
-              down={()=>this.down(this.state.value)}
+              onTodoChange={this.onTodoChange}
+              up={this.up}
+              down={this.down}
             />
           </div>
         </div>
-        <div className="col-xs-6 col-sm-6 col-md-8 col-lg-6"> 
-        {
-          this.state.arr.map((item, index) => (
-            <ControlSize
-              down={()=>this.resetDown(index,item)}
-              value={item}
-              onTodoChange={(e) => this.onTodoChangeItem(e.target.value,index)}
-              up={()=>this.setUp(index,item)}
-            />
-          ))
-        }
+        <div className="col-xs-6 col-sm-6 col-md-8 col-lg-6">
+          {
+            this.state.arr.map((item, index) => (
+              <div className="form-group" key={index}>
+                <label>Index {index}</label>
+                <ControlSize key={index} data={item}
+                  value={item}
+                  onTodoChange={this.onTodoChangeItem(index)}
+                  up={this.setUp(index, item)}
+                  down={this.resetDown(index, item)}
+                />
+              </div>
+            ))
+          }
         </div>
       </div>
     );
