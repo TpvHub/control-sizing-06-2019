@@ -8,6 +8,10 @@
 .App2 {
   float: right;
 }
+.App3 {
+  display: flex;
+}
+
 
 
 .App-logo {

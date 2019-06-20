@@ -1,7 +1,7 @@
 import React from "react";
 import "./App.css";
 import Count from "./component/count";
-
+import Del from "./component/del";
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -19,8 +19,8 @@ class App extends React.Component {
       });
     } else {
       let old = this.state.count;
-      let amout =  valueNew - old;
-      amout <=0 ? this.handleSub(Math.abs(amout)):this.handleAdd(amout);     
+      let amout = valueNew - old;
+      amout <= 0 ? this.handleSub(Math.abs(amout)) : this.handleAdd(amout);
     }
   };
 
@@ -31,13 +31,20 @@ class App extends React.Component {
     });
   };
 
-  handleSub = (amount) => {
-    this.setState(state => {
-      state.count = state.count - amount;
-      //state.values = state.values.filter((item, i) => state.count !== i);
-      state.values = state.values.slice(0,-amount)
-      return state;
-    });
+  handleSub = amount => {
+    if (this.state.count - amount < 0) {
+      this.setState({
+        count: this.state.count,
+        values: []
+      });
+    } else {
+      this.setState(state => {
+        state.count = state.count - amount;
+        //state.values = state.values.filter((item, i) => state.count !== i);
+        state.values = state.values.slice(0, -amount);
+        return state;
+      });
+    }
   };
 
   handleChildInput = (id, event) => {
@@ -93,21 +100,30 @@ class App extends React.Component {
     });
   };
 
+  handleDelete = id =>{
+    this.setState(state => {
+      state.count = state.count - 1;
+      state.values = state.values.filter((item, i) => id !== i);
+      return state;
+    });
+  }
+
   render() {
     return (
       <div className="App">
         <div className="App1">
           <Count
             onChange={this.handleInput}
-            onClickAdd={this.handleAdd.bind(this,1)}
-            onClickSub={this.handleSub.bind(this,1)}
+            onClickAdd={this.handleAdd.bind(this, 1)}
+            onClickSub={this.handleSub.bind(this, 1)}
             value={this.state.count}
           />
         </div>
         <div className="App2">
           {this.state.values.map((item, i) => {
             return (
-              <div key={i}>
+              <div key={i} className="App3">
+                <Del onDelete={this.handleDelete.bind(this,i)}/>
                 <Count
                   onChange={this.handleChildInput.bind(this, i)}
                   onClickAdd={this.handleChildAdd.bind(this, i)}
