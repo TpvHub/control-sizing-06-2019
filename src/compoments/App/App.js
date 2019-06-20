@@ -94,6 +94,22 @@ class App extends React.Component {
     }
   }
 
+  deleteAll = () => {
+    this.setState(() => ({
+      arr: [],
+    }));
+  }
+
+  deleteItem = (index) =>{
+    return () => {
+      index = parseInt(index);
+      let arrNew = [];
+      arrNew = this.state.arr.filter( (item,i) =>  i != index);
+      this.setState((state) => ({
+        arr: arrNew,
+      })); 
+    }
+  } 
 
   render() {
     return (
@@ -106,6 +122,7 @@ class App extends React.Component {
               onTodoChange={this.onTodoChange}
               up={this.up}
               down={this.down}
+              delete={this.deleteAll}
             />
           </div>
         </div>
@@ -114,11 +131,12 @@ class App extends React.Component {
             this.state.arr.map((item, index) => (
               <div className="form-group" key={index}>
                 <label>Index {index}</label>
-                <ControlSize key={index} data={item}
+                <ControlSize key={index}
                   value={item}
                   onTodoChange={this.onTodoChangeItem(index)}
                   up={this.setUp(index, item)}
                   down={this.resetDown(index, item)}
+                  delete={this.deleteItem(index)}
                 />
               </div>
             ))

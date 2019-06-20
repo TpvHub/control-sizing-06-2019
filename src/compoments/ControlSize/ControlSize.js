@@ -19,6 +19,7 @@ class ControlSize extends React.Component {
                   <button id="up" className="btn btn-default" onClick={this.props.up}>
                     <span className="glyphicon glyphicon-plus"></span>
                   </button>
+                  <button type="button" class="btn btn-danger" onClick={this.props.delete}>Delete</button>
                 </div>
             </div>
         );
