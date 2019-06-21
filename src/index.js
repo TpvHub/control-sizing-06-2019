@@ -4,133 +4,51 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
-// class ChangeNumber extends React.Component {
-//   constructor(props) {
-//     super(props);
-//     this.state = {
-//       currentNumber: 0
-//     };
-//   }
-
-//   anElement = () => {
-//     return (
-//       <div>
-//         <button onClick={this.down}>
-//           -
-//         </button>
-//         <input type="text" name="number" value={this.state.currentNumber} onChange={this.updateInput} />
-//         <button onClick={this.up}>
-//           +
-//         </button>
-//         <button onClick={this.create}>
-//           Create
-//         </button>
-
-//       </div>
-//     );
-//   }
-
-//   up = () => {
-//     this.setState(state => ({
-//       currentNumber: state.currentNumber + 1
-//     }));
-//   }
-
-//   down = () => {
-//     this.setState(state => ({
-//       currentNumber: state.currentNumber - 1
-//     }));
-//   }
-
-//   updateInput = (evt) => {
-//     this.setState({
-//       currentNumber: isNaN(parseInt(evt.target.value)) ? 0 : parseInt(evt.target.value)
-//     })
-//   }
-
-//   render() {
-//     return (
-//       <div>
-//         <div>
-//           <button onClick={this.down}>
-//             -
-//           </button>
-//           <input type="text" name="number" value={this.state.currentNumber} onChange={this.updateInput} />
-//           <button onClick={this.up}>
-//             +
-//           </button>
-//           <button onClick={this.create}>
-//             Create
-//           </button>
-//         </div>
-
-//         <div id="my-content">{this.anElement()}</div>
-//       </div>
-//     );
-//   }
-// }
-
-// ReactDOM.render(
-//   <ChangeNumber />,
-//   document.getElementById('root')
-// );
-
 class Sample extends React.Component {
 
   constructor() {
       super();
       this.state = {
           count: 0,
-          counts: {}
+          counts: []
       }
   }
   
-  getrDivList= ()=> {
-      var divList = [];
-      for (var i = 1; i <= this.state.count; i++) {
-          divList.push(<div key={i.toString()}>
-            <button onClick={this.downSub(i)}>
-              -
-            </button>
-            <input type="text" name="number" value={this.state.counts[`count_${i}`]} onChange={this.updateSubInput(i)}/>
-            <button onClick={this.upSub(i)}>
-              +
-            </button>
-          </div>);
+  up = (isUp) => {
+    return () => {
+      let currentNumber;
+      if(isUp) {
+        currentNumber = this.state.count+1
+        this.state.counts.push(0);
       }
-      return divList;
-  }
-  
-  up = () => {
-    let currentNumber = this.state.count+1
-    let oldCounts = this.state.counts;
-    this.setState({
-      count:  currentNumber,
-      counts: {...oldCounts, [`count_${currentNumber}`]: 0}
-    });
-  }
-
-  down = () => {
-    let currentNumber = this.state.count-1
-    let oldCounts = this.state.counts;
-    this.setState({
-      count:  currentNumber,
-      counts: {...oldCounts, [`count_${currentNumber+1}`]: 0}
-    });
+      else {
+        currentNumber = this.state.count-1
+        if(currentNumber < 0) currentNumber = 0;
+        this.state.counts.pop();
+      }
+      this.setState({
+        count:  currentNumber
+      });
+    }
+    
   }
 
   updateInput = (evt) => {
     let currentNumber = this.state.count;
     let inputNum = isNaN(parseInt(evt.target.value))? 0 : parseInt(evt.target.value);
-    let counts = this.state.counts;
-    for (var i = 1; i <= inputNum; i++) {
-      if(i <= currentNumber) continue;
-      let oldCountObj = counts;
-      counts = {...oldCountObj, [`count_${i}`]: 0}
+    if(inputNum < 0) inputNum = 0;
+    let indexes = Array(inputNum).fill(0);
+    if(inputNum < currentNumber) {
+      this.state.counts = this.state.counts.slice(0,inputNum);
     }
+    indexes.map((item, i) => {
+      i=i+1;
+      if(i>currentNumber) {
+        this.state.counts.push(0);
+      }
+    });
     this.setState({
-      count:  inputNum,
-      counts
+      count:  inputNum
     });
   }
 
@@ -138,64 +56,95 @@ class Sample extends React.Component {
     
     return (evt) => {
       let inputNum = isNaN(parseInt(evt.target.value))? 0 : parseInt(evt.target.value);
+      this.state.counts[index-1] = inputNum;
       this.setState(state => ({
-        count: state.count,
-        counts: {...state.counts, [`count_${index}`]:inputNum}
       }))
     }
   }
 
-  upSub = (index) => {
+  upSub = (index, isUp) => {
     return() => {
-      let inputNum = this.state.counts[`count_${index}`]+index;
+      let inputNum;
+      if(isUp) {
+        inputNum = this.state.counts[index-1]+index;
+      }
+      else {
+        inputNum = this.state.counts[index-1]-index;
+      }
+      this.state.counts[index-1] = inputNum;
       this.setState(state => ({
-        count: state.count,
-        counts: {...state.counts, [`count_${index}`]:inputNum}
       }))
     }
   }
 
-  downSub = (index) => {
-    return() => {
-      let inputNum = this.state.counts[`count_${index}`]-index;
+  deleteControl = (index) => {
+    return () => {
+      this.state.counts.splice(index-1, 1);
       this.setState(state => ({
-        count: state.count,
-        counts: {...state.counts, [`count_${index}`]:inputNum}
+        count: state.count-1
       }))
     }
   }
-
   display = () => {
     console.log(JSON.stringify(this.state,0,2))
   }
-  
+
+  getDivList= ()=> {
+    const indexes = Array(this.state.count).fill(0);
+    return indexes.map((item, i) => {
+      i = i+1;
+      
+      return <div key={i}>
+        <ControlDiv
+        up = {this.upSub(i, true)}
+        down = {this.upSub(i, false)}
+        update = {this.updateSubInput(i)}
+        count = {this.state.counts[i-1]}
+      />
+      <button onClick={this.deleteControl(i)}>x</button>
+      </div>
+    });
+  }
+
   render() {
       return (
         <div>
-          <div>
-            <button onClick={this.down}>
-              -
-            </button>
-            <input type="text" name="number" value={this.state.count} onChange={this.updateInput} />
-            <button onClick={this.up}>
-              +
-            </button>
-          </div>
-          {/* <button onClick={this.display}>test</button> */}
+          <ControlDiv 
+            up = {this.up(true)}
+            down = {this.up(false)}
+            update = {this.updateInput}
+            count = {this.state.count}
+          />
+          
+          <button onClick={this.display}>test</button>
           <div style={{marginTop: 20+'px'}}>
-              { this.getrDivList() }
+              { this.getDivList() }
               
           </div>
         </div>
       );
   }
 }
+const ControlDiv = ({up, down, update, count}) => {
+  return (
+    <div style={{float: 'left'}}>
+      <button onClick={down}>
+        -
+      </button>
+      <input type="text" name="number" value={count} onChange={update}/>
+      <button onClick={up}>
+        +
+      </button>
+    </div>
+  );
+}
+
 ReactDOM.render(
   <Sample />,
   document.getElementById('root')
 );
 
-// ReactDOM.render(<App />, document.getElementById('root'));
+// ReactDOM.render(<Test />, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
