@@ -19,7 +19,10 @@ class App extends React.Component {
     if(value <= this.state.value)
       arrNew = arrOld.filter((item,index) => index < value)
     else
-      arrNew = [...this.state.arr, ...Array(value - this.state.value).fill(0)];
+      arrNew = [
+        ...this.state.arr, 
+        ...Array(value - this.state.value).fill(0)
+      ];
     this.setState(state => ({
       value: value,
       arr: arrNew
@@ -50,7 +53,10 @@ class App extends React.Component {
     let up = parseInt(value_up) + 1;
     let arrNew = [];
     let arrOld = this.state.arr;
-    arrNew = [...arrOld, ...Array(up-arrOld.length).fill(0)]; 
+    arrNew = [
+      ...arrOld,
+      ...Array(up-arrOld.length).fill(0)
+    ]; 
     this.setState(state => ({
       value: up,
       arr: arrNew
@@ -96,16 +102,17 @@ class App extends React.Component {
 
   deleteAll = () => {
     this.setState(() => ({
+      value: 0,
       arr: [],
     }));
   }
 
   deleteItem = (index) =>{
     return () => {
-      index = parseInt(index);
       let arrNew = [];
-      arrNew = this.state.arr.filter( (item,i) =>  i != index);
+      arrNew = this.state.arr.filter( (item,i) =>  i !== index);
       this.setState((state) => ({
+        value: this.state.value - 1,
         arr: arrNew,
       })); 
     }
