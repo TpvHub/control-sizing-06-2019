@@ -8,7 +8,7 @@ export const sub = amount => ({
 })
 
 export const del = index => ({
-    type: 'ADD',
+    type: 'DEL',
     index
 })
 

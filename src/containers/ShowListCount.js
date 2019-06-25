@@ -1,6 +1,6 @@
 import ListCount from "../component/ListCount";
 import { connect } from "react-redux";
-import { del,edit,addCount,subCount,changeCount } from "../actions/index"
+import { del,addCount,subCount,changeCount } from "../actions/index"
 
 const mapStateToProps = (state, ownProps) => ({
     values: state.values
