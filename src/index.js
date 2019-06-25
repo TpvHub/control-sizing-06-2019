@@ -4,8 +4,12 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { Provider } from 'react-redux';
-import store from "./reducers/index"
-//Replace  import Provider from 'react-redux'.Provider;
+// import reducer from "./reducers/index"
+import { createStore, compose } from 'redux';
+import rootReducer from "./reducers"
+const store = createStore(rootReducer, compose(
+    window.devToolsExtension ? window.devToolsExtension() : f => f));
+
 ReactDOM.render(
     <Provider store={store}>
         <App />

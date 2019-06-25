@@ -22,6 +22,6 @@ export const subCount = index => ({
 })
 export const changeCount = (index, value) => ({
     type: 'CHANGE_COUNT',
-    index:index,
+    index: index,
     value: parseInt(value)
 })
