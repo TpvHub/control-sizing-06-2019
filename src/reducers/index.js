@@ -1,4 +1,4 @@
-import { createStore } from 'redux'
+import { createStore,compose } from 'redux'
 let defaultState = {
   values: []
 }
@@ -7,7 +7,7 @@ function reducer(state = defaultState, action) {
     case 'ADD':
       return { ...state, values: [...state.values, ...Array(action.amount).fill(0)] }
     case 'SUB':
-      return { ...state, values: [...state.values.slice(0,-action.amount)] }
+      return { ...state, values: [...state.values.slice(0, -action.amount)] }
     case 'DEL':
       return { ...state, values: state.values.filter((item, i) => action.index !== i) }
     case 'EDIT':
@@ -35,7 +35,9 @@ function reducer(state = defaultState, action) {
   }
 }
 
-let store = createStore(reducer)
+let store = createStore(reducer, compose(
+  window.devToolsExtension ? window.devToolsExtension() : f => f
+));
 
 // store.subscribe(() => console.log(store.getState()))
 
