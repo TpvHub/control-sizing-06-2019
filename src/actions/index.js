@@ -8,7 +8,7 @@ export const downTodo = () => ({
     type: types.DOWN_TODO
 })
 
-export const changeTodo = () => ({
+export const changeTodo = (e) => ({
     type: types.CHANGE_TODO,
     value: e.target.value
 })
@@ -25,10 +25,10 @@ export const setUP = (index,item) => ({
     item: item
 })
 
-export const changeItemToDo = (item) => ({
+export const changeItemToDo = (value,index) => ({
     type: types.CHANGE_ITEM_TODO,
-    value: e.target.value,
-    item: item
+    value: value,
+    index: index
 })
 
 export const deleteItem = (index) => ({
@@ -38,5 +38,4 @@ export const deleteItem = (index) => ({
 
 export const deleteItemAll = () => ({
     type: types.DELETE_ALL,
-    index: index
 })

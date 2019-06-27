@@ -6,4 +6,3 @@ export const SET_UP           = 'SET_UP';
 export const CHANGE_ITEM_TODO = 'CHANGE_ITEM_TODO';
 export const DELETE_ITEM      = 'DELETE_ITEM';
 export const DELETE_ALL       = 'DELETE_ALL'; 
-
