@@ -1,8 +1,8 @@
-export const UP_TODO          = 'UP_TODO';
-export const DOWN_TODO        = 'DOWN_TODO';
-export const CHANGE_TODO      = 'CHANGE_TODO';
-export const RESET_DOWN       = 'RESET_DOWN';
-export const SET_UP           = 'SET_UP';
-export const CHANGE_ITEM_TODO = 'CHANGE_ITEM_TODO';
-export const DELETE_ITEM      = 'DELETE_ITEM';
-export const DELETE_ALL       = 'DELETE_ALL'; 
+export const ADD_COUNTS          = 'ADD_COUNTS';
+export const SUB_COUNTS          = 'SUB_COUNTS';
+export const UPDATE_COUNT_PARENT = 'UPDATE_COUNT_PARENT'
+export const DELETE_COUNT        = 'DELETE_COUNT';
+export const UPDATE_COUNT        = 'UPDATE_COUNT';
+export const DELETE_ALL          = 'DELETE_ALL';
+export const RESET_DOWN          = 'RESET_DOWN';
+export const SET_UP              = 'SET_UP';

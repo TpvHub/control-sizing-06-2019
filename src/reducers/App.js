@@ -6,100 +6,77 @@ var defaultState = {
 
 var app = (state = defaultState, action) => {
     switch (action.type) {
-        case types.UP_TODO:
-            const value_up = state.arr.length;
-            let up = value_up + 1;
-            let arrNew = [];
-            let arrOld = state.arr;
-            arrNew = [
-                ...arrOld,
-                ...Array(up-arrOld.length).fill(0)
-            ]; 
+        case types.ADD_COUNTS: {
+            const amount = action.amount
             return {
                 ...state,
-                arr: arrNew
-            }
-        
-        case types.DOWN_TODO:{
-            const value_down = state.arr.length;
-            let arrNew = [];
-            let down = value_down - 1;
-            let arrOld = state.arr;
-            if (down > 0) {
-                arrNew = arrOld.filter((item, index) => index < down);
-                return {
-                    ...state,
-                    arr: arrNew
-                }
-            } else {
-                return {
-                    ...state,
-                    arr: []
-                }
+                arr: [
+                    ...state.arr,
+                    ...Array(amount).fill(0)
+                ]
             }
         }
 
-        case types.CHANGE_TODO:{
-            let value = action.value;
-            value = (isNaN(parseInt(value)) || parseInt(value) < 0) ? 0 : parseInt(value);
-            let arrOld = state.arr;
-            arrNew = [];
-            if(value <= state.arr.length)
-              arrNew = arrOld.filter((item,index) => index < value)
-            else
-            arrNew = [
-                ...state.arr, 
-                ...Array(value - state.arr.length).fill(0)
-            ];
+        case types.SUB_COUNTS: {
+            const amount = action.amount
             return {
                 ...state,
-                arr: arrNew
-            };
+                arr: state.arr.slice(0, amount * -1)
+            }
+        }
+
+        case types.DELETE_COUNT: {
+            const _index = action.index
+            return {
+                ...state,
+                arr: state.arr.filter((item, index) => _index !== index)
+            }
+        }
+
+        case types.UPDATE_COUNT: {
+            const _index = action.index
+            const newValue = action.newValue
+            return {
+                ...state,
+                arr: state.arr.map((item, index) => _index === index ? newValue : item)
+            }
+        }
+
+        case types.UPDATE_COUNT_PARENT: {
+            const newValue = action.newValue;
+            console.log("newValue: " +state.arr.length);
+            if(newValue <= state.arr.length){
+                return {
+                    ...state,
+                    arr: state.arr.filter((item,index) => index < newValue)
+                }               
+            }else{
+                return {
+                    ...state,
+                    arr: [
+                        ...state.arr,
+                        ...Array(newValue - state.arr.length).fill(0)
+                    ]
+                }
+            }
         }
 
         case types.RESET_DOWN: {
-            let index = action.index;
-            let item = action.item;
-            let arrNew = state.arr;
-            arrNew[index] = item - index - 1;        
+            let _index = action.index;
             return {
                 ...state,
-                arr: arrNew
+                arr: state.arr.map((item,index) => index === _index ? item - index - 1 : item)
             };            
         }
 
         case types.SET_UP: {
-            let index = action.index;
-            let item = action.item;
-            let arrNew = state.arr;
-            arrNew[index] = index + item + 1;
+            let _index = action.index;
             return {
                 ...state,
-                arr: arrNew
+                arr: state.arr.map((item,index) => index === _index ? index + item + 1 : item)
             };            
         }
 
-        case types.CHANGE_ITEM_TODO: {
-            let value = action.value;
-            value = (isNaN(parseInt(value)) || parseInt(value) < 0) ? 0 : parseInt(value);  
-            let index = action.index;
-            let arrNew = state.arr;
-            arrNew[index] = value;
-            return {
-                ...state,
-                arr: arrNew
-            };            
-        }
-
-        case types.DELETE_ITEM: {
-            let arrNew = [];
-            arrNew = state.arr.filter( (item,i) =>  i !== action.index);
-            state.arr = arrNew;
-            return {
-                ...state
-            };
-        }
-        
         case types.DELETE_ALL:{
             return {
                 ...state,

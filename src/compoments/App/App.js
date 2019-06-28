@@ -31,9 +31,9 @@ class App extends React.Component {
                 <ControlSize key={index}
                   value={item}
                   onTodoChange={(e)=>{this.props.changeItemToDo(e.target.value,index)}}
-                  up={()=>{this.props.setUP(index,item)}}
-                  down={()=>{this.props.resetDown(index,item)}}
-                  delete={()=>{this.props.deleteItem(item)}}
+                  up={()=>{this.props.setUP(index)}}
+                  down={()=>{this.props.resetDown(index)}}
+                  delete={()=>{this.props.deleteItem(index)}}
                 />
               </div>
             ))
@@ -44,8 +44,7 @@ class App extends React.Component {
   }
 }
 
-const mapDispatchToProps = (dispatch,props) => {
-  return {
+const mapDispatchToProps = (dispatch,props) => ({
     upTodo: () => {
       dispatch(actions.upTodo());
     },
@@ -53,30 +52,29 @@ const mapDispatchToProps = (dispatch,props) => {
       dispatch(actions.downTodo());
     },
     deleteItemAll: () => {
-      dispatch(actions.deleteItemAll())
+      dispatch(actions.deleteItemAll());
     },
     changeTodo:(e) => {
-      dispatch(actions.changeTodo(e))
+      let newValue = isNaN(parseInt(e.target.value)) ? 0 : parseInt(e.target.value); 
+      dispatch(actions.changeTodo(newValue));
     },
-    setUP:(index,item) => {
-      dispatch(actions.setUP(index,item))
+    setUP:(index) => {
+      dispatch(actions.setUP(index))
     },
-    resetDown:(index,item) => {
-      dispatch(actions.resetDown(index,item))
+    resetDown:(index) => {
+      dispatch(actions.resetDown(index))
     },
-    deleteItem:(item) => {
-      dispatch(actions.deleteItem(item))
+    deleteItem:(index) => {
+      dispatch(actions.deleteItem(index))
     },
     changeItemToDo:(value,index) => {
+      value = isNaN(parseInt(value)) ? 0 : parseInt(value); 
       dispatch(actions.changeItemToDo(value,index))
-    }
   }
-}
+})
 
-const mapStateToProps = (state) => {
-  return {
-    todos: state.app
-  }
-}
+const mapStateToProps = (state) => ({
+  todos: state.app
+})
 
 export default connect(mapStateToProps,mapDispatchToProps)(App);
