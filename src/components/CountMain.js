@@ -7,23 +7,27 @@ class CountMain extends React.Component {
   }
 
   componentDidMount() {
-    this.textInput.current.focusTextInput();
+    //this.textInput.current.focusTextInput();
   }
-
-  handleChange = event => {
-    //this.props.sumCount = event.target.value
-    console.log(event.target.value);
-    //this.textInput.current.focus();
-    // this.setState({ value: event.target.value });
-  }
-
+  
   render() {
     return (
       <Count
+        onChange={event => {
+          let value = event.target.value;
+          if (!isNaN(value) && parseInt(value) >= 0) {
+            let old = this.props.sumOld;
+            let amount = value - old;
+            amount <= 0
+              ? this.props.handleSub(Math.abs(amount))
+              : this.props.handleAdd(amount);
+          }
+        }
+        }
         onBlur={this.handleChange}
         onClickAdd={() => this.props.handleAdd(1)}
         onClickSub={() => this.props.handleSub(1)}
-        // value={this.props.sumCount}
+        value={this.props.sumCount}
         ref={this.textInput}
       />
     );

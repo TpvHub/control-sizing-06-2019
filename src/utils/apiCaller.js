@@ -2,7 +2,7 @@ import * as Config from "../constants/Config";
 import Axios from "axios";
 
 
-export default function callApi(endpoint, method = "GET", data) {
+export default function callApi(endpoint,method = "GET", data) {
     return (
         Axios({
             method: method,

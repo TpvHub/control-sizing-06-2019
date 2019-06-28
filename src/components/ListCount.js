@@ -1,17 +1,10 @@
 import React from "react";
 import Count from "./Count";
 import Del from "./Del";
-// import callAPI from "./../utils/apiCaller";
-// import { getData} from "../actions/index";
-
 
 class ListCount extends React.Component {
 
     componentDidMount() {
-        // callAPI('counts', 'GET', null).then(res => {
-        //     this.props.getAllData(res.data)
-        //     console.log(res.data)
-        // })
         this.props.getAllData();
     }
 
@@ -21,19 +14,19 @@ class ListCount extends React.Component {
             values.map((item, i) => {
                 return (
                     <div key={i} className="App3">
-                        <Del onDelete={() => handleDelete(i)} />
+                        <Del onDelete={() => handleDelete(item.id)} />
                         <Count
                             onChange={event => {
                                 if (this.checkInput(event.target.value))
-                                    onChange(i, event.target.value)
+                                    onChange(item.id, event.target.value)
                             }}
                             onClickAdd={() => {
-                                if (this.checkInput(item + i + 1))
-                                    onChange(i, item + i + 1)
+                                if (this.checkInput(item.value + i + 1))
+                                    onChange(item.id, item.value + i + 1)
                             }}
                             onClickSub={() => {
-                                if (this.checkInput(item - i - 1))
-                                    onChange(i, item - i - 1)
+                                if (this.checkInput(item.value - i - 1))
+                                    onChange(item.id, item.value - i - 1)
                             }}
                             value={item.value}
                         />

@@ -5,18 +5,18 @@ export const getData = (data) => ({
     data
 })
 
-export const add = amount => ({
+export const add = data => ({
     type: 'ADD',
-    amount
+    data
 })
 export const sub = amount => ({
     type: 'SUB',
     amount
 })
 
-export const del = index => ({
+export const del = id => ({
     type: 'DEL',
-    index
+    id
 })
 
 export const addCount = index => ({
@@ -27,10 +27,10 @@ export const subCount = index => ({
     type: 'SUB_COUNT',
     index
 })
-export const changeCount = (index, value) => ({
+export const changeCount = (data = {}) => ({
     type: 'CHANGE_COUNT',
-    index: index,
-    value: parseInt(value)
+    id: data.id,
+    value: parseInt(data.value)
 })
 
 export const getCountRequest = () => {
@@ -60,30 +60,29 @@ export const postCountRequest = amount => {
     return dispatch => {
         let arr = Array(amount).fill(null).map(item => createCount());
         Promise.all(arr).then(values => {
-            return dispatch(add(amount));
+            return dispatch(add(values));
         });
     }
 
 }
 
-export const delCountRequest = value => {
+export const putCountRequest = (id, value) => {
     return dispatch => {
-        let arr = Array[value].fill();
-        Promise.all(arr).then(values => {
-            console.log(values);
-        });
-        // for (let i = 0; i < value; i++) {
-        //     callAPI('counts', 'DELETE', {
-        //         id: 0,
-        //     })
-        //         .then(
-        //             res => {
-        //                 return dispatch(sub(1));
-        //             }
-        //         )
-        // }
+        callAPI(`counts/${id}`, 'PUT', {
+            id: id,
+            value: value
+        }).then(res => {
+            return dispatch(changeCount(res.data))
+        })
     }
+}
 
+export const delCountRequest = id => {
+    return dispatch => {
+        callAPI(`counts/${id}`, 'DELETE', null).then(res => {
+            return dispatch(del(res.data.id))
+        })
+    }
 }
 
 

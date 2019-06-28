@@ -1,6 +1,6 @@
 import ListCount from "../components/ListCount";
 import { connect } from "react-redux";
-import { getCountRequest, del, changeCount } from "../actions/index";
+import { getCountRequest, del, putCountRequest,delCountRequest } from "../actions/index";
 
 
 const mapStateToProps = (state, ownProps) => ({
@@ -14,8 +14,8 @@ const mapStateToProps = (state, ownProps) => ({
 
 const mapDispatchToProps = {
     getAllData: getCountRequest,
-    handleDelete: del,
-    onChange: changeCount
+    handleDelete: delCountRequest,
+    onChange: putCountRequest
 }
 
 export default connect(

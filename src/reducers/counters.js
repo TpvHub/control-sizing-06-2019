@@ -8,11 +8,12 @@ const counter = (state = { values: [] }, action) => {
     case "ADD":
       return {
         ...state,
-        values: [...state.values, ...Array(action.amount)
-          .fill({
-            value: 0,
-            index: 0
-          })]
+        // values: [...state.values, ...Array(action.data.length)
+        //   .fill({
+        //     value: 0,
+        //     index: 0
+        //   })]
+        values: [...state.values,...action.data]
       };
     case "SUB":
       return {
@@ -22,13 +23,13 @@ const counter = (state = { values: [] }, action) => {
     case "DEL":
       return {
         ...state,
-        values: state.values.filter((item, i) => action.index !== i)
+        values: state.values.filter((item, i) => action.id !== item.id)
       };
     case "CHANGE_COUNT":
       return {
         ...state,
         values: state.values.map((item, i) =>
-          i === action.index ? action.value : item
+          item.id === action.id ? { ...item, value: action.value } : item
         )
       };
     default:
