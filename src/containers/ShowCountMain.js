@@ -1,6 +1,6 @@
-import Count from "../component/CountMain";
+import Count from "../components/CountMain";
 import { connect } from "react-redux";
-import { add, sub } from "../actions/index";
+import { postCountRequest, sub } from "../actions/index";
 const mapStateToProps = (state, ownProps) => ({
   values: state.counter.values,
   sumCount: state.counter.values.length,
@@ -12,7 +12,7 @@ const mapStateToProps = (state, ownProps) => ({
 // });
 
 const mapDispatchToProps = {
-    handleAdd: add,
+    handleAdd: postCountRequest,
     handleSub: sub
 }
 

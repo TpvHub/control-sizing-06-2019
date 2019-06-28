@@ -1,12 +1,18 @@
-let defaultState = {
-  values: []
-};
-const counter = (state = defaultState, action) => {
+const counter = (state = { values: [] }, action) => {
   switch (action.type) {
+    case "SELECT_DATA":
+      return {
+        ...state,
+        values: action.data
+      };
     case "ADD":
       return {
         ...state,
-        values: [...state.values, ...Array(action.amount).fill(0)]
+        values: [...state.values, ...Array(action.amount)
+          .fill({
+            value: 0,
+            index: 0
+          })]
       };
     case "SUB":
       return {
@@ -18,20 +24,6 @@ const counter = (state = defaultState, action) => {
         ...state,
         values: state.values.filter((item, i) => action.index !== i)
       };
-    // case "ADD_COUNT":
-    //   return {
-    //     ...state,
-    //     values: state.values.map((item, i) =>
-    //       i === action.index ? item + action.index + 1 : item
-    //     )
-    //   };
-    // case "SUB_COUNT":
-    //   return {
-    //     ...state,
-    //     values: state.values.map((item, i) =>
-    //       i === action.index ? item - action.index - 1 : item
-    //     )
-    //   };
     case "CHANGE_COUNT":
       return {
         ...state,
@@ -43,14 +35,4 @@ const counter = (state = defaultState, action) => {
       return state;
   }
 };
-
-// let store = createStore(counters, compose(
-//   window.devToolsExtension ? window.devToolsExtension() : f => f
-// ));
-
-// store.subscribe(() => console.log(store.getState()))
-
-// export default counters;
-
-
 export default counter;
