@@ -6,13 +6,22 @@ class Sample extends React.Component {
       super(props);
     }
   
+    componentDidMount = () => {
+      this.props.getall()
+    }
+
     up = (isUp) => {
       return () => {
         if (isUp) {
           this.props.add(1);
         }
         else {
-          this.props.sub(1);
+          let length = this.props.counts.length
+          let id = this.props.counts[length-1]._id
+          let ids = new Array(1).fill().map((item, index) => {
+            return id
+          })
+          this.props.sub(ids);
         }
       }
     }
@@ -24,31 +33,44 @@ class Sample extends React.Component {
       if(inputNum > currentCount) {
         this.props.add(inputNum - currentCount);
       }
-      else this.props.sub(currentCount - inputNum);
+      else {
+        let amount = currentCount - inputNum
+        const idOfCounts = this.props.counts.map((item, index) => {
+          return item._id
+        })
+        const ids = idOfCounts.slice(-amount)
+        this.props.sub(ids);
       }
+    }
   
     updateSubInput = (index) => {
   
       return (evt) => {
         let inputNum = isNaN(parseInt(evt.target.value)) ? 0 : parseInt(evt.target.value);
-        this.props.update(inputNum, index);
+        let id = this.props.counts[index]._id
+        this.props.update(inputNum, id);
       }
     }
   
     upSub = (index, isUp) => {
+      let id = this.props.counts[index]._id
       return () => {
         if (isUp) {
-          this.props.update(this.props.counts[index] + index+1, index);
+          this.props.update(this.props.counts[index].value + index+1, id);
         }
         else {
-          this.props.update(this.props.counts[index] - (index+1), index);
+          this.props.update(this.props.counts[index].value - (index+1), id);
         }
       }
     }
   
     deleteControl = (index) => {
       return () => {
-        this.props.delete(index);
+        let id = this.props.counts[index]._id
+        let ids = new Array(1).fill().map((item, index) => {
+          return id
+        })
+        this.props.delete(ids, index);
       }
     }
     display = () => {
@@ -63,13 +85,24 @@ class Sample extends React.Component {
             up={this.upSub(i, true)}
             down={this.upSub(i, false)}
             update={this.updateSubInput(i)}
-            count={item}
+            count={item.value}
           />
           <button onClick={this.deleteControl(i)}>x</button>
         </div>
       });
     }
   
+    // callAPI = ()=> {
+    //     fetch("http://localhost:9000/api/count?id=5d15970f309322306ee00418")
+    //         .then(res => {
+    //           console.log(res.text())
+    //         })
+    // }
+    
+    // componentWillMount() {
+    //     this.callAPI();
+    // }
+
     render() {
       return (
         <div>

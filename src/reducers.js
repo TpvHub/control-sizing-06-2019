@@ -1,25 +1,20 @@
 import {
-    ADD,
     SUB,
     UPDATE,
-    DELETE
+    DELETE,
+    GETALL
 } from './actions'
 
 const initialState = {
-    status: false,
     counts: []
 }
 
 const myReducer = (state = initialState, action) => {
     switch (action.type) {
-        case ADD: {
-            const amount = action.amount;
+        case GETALL: {
             return {
                 ...state,
-                counts: [
-                    ...state.counts,
-                    ...Array(amount).fill(0)
-                ]
+                counts: action.data                                                                                              
             }
         }
         case SUB: {
@@ -31,11 +26,14 @@ const myReducer = (state = initialState, action) => {
         }
         case UPDATE: {
             const amount = action.amount;
-            const index = action.index;
+            const id = action.id;
             return {
                 ...state,
                 counts: state.counts.map((item, i) => {
-                    if (index === i) return amount;
+                    if (item._id === id) return {
+                        ...item,
+                        value: amount
+                    }
                     else return item;
                 })
             }
