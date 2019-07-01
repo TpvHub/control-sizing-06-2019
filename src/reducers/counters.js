@@ -18,7 +18,7 @@ const counter = (state = { values: [] }, action) => {
     case "SUB":
       return {
         ...state,
-        values: [...state.values.slice(0, -action.amount)]
+        values: [...state.values.slice(0, -action.data)]
       };
     case "DEL":
       return {

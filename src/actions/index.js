@@ -1,4 +1,5 @@
 import callAPI from "./../utils/apiCaller";
+// import uuidv1 from "uuid/v1";
 
 export const getData = (data) => ({
     type: 'SELECT_DATA',
@@ -9,9 +10,9 @@ export const add = data => ({
     type: 'ADD',
     data
 })
-export const sub = amount => ({
+export const sub = data => ({
     type: 'SUB',
-    amount
+    data
 })
 
 export const del = id => ({
@@ -45,25 +46,24 @@ const createCount = () => {
     return (
         new Promise((resolve, reject) => {
             callAPI('counts', 'POST', {
+                // id: uuidv1(),
                 value: 0,
                 index: 0
             })
                 .then(res => {
                     resolve(res.data)
-                    //setTimeout(resolve, 100, res.data);
+                    //setTimeout(resolve, 200, res.data);
                 })
         })
     )
 }
-
 export const postCountRequest = amount => {
     return dispatch => {
         let arr = Array(amount).fill(null).map(item => createCount());
         Promise.all(arr).then(values => {
             return dispatch(add(values));
-        });
+        }).catch(err => console.log(err));
     }
-
 }
 
 export const putCountRequest = (id, value) => {
@@ -77,10 +77,35 @@ export const putCountRequest = (id, value) => {
     }
 }
 
+const delCount = id => {
+    return (
+        new Promise((resolve, reject) => {
+            callAPI(`counts/${id}`, 'DELETE', null).then(res => {
+                resolve(res.data)
+            })
+        })
+    )
+}
+
+export const delMulCountRequest = data => {
+    return dispatch => {
+        let arr = data.map((item, i) =>
+            delCount(item.id)
+        )
+        Promise.all(arr).then(results => {
+            return dispatch(sub(results.length));
+        });
+    }
+}
+
+
 export const delCountRequest = id => {
     return dispatch => {
         callAPI(`counts/${id}`, 'DELETE', null).then(res => {
-            return dispatch(del(res.data.id))
+            // eslint-disable-next-line no-unused-expressions
+            if (res.status === 200) {
+                return dispatch(del(id))
+            }
         })
     }
 }

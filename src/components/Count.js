@@ -12,9 +12,11 @@ class Count extends React.Component {
         <button onClick={this.props.onClickSub}>-</button>
         <input
           type="text"
-          value={this.props.value}
           onBlur={this.props.onBlur}
-          onChange = {this.props.onChange}
+          ref={this.props.inputRef}
+          defaultValue={this.props.defaultValue}
+          onChange={this.props.onChange}
+          value={this.props.value}
         />
         <button onClick={this.props.onClickAdd}>+</button>
       </div>
