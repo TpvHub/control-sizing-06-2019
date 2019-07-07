@@ -14,8 +14,15 @@ import {
 
 class App extends React.Component {
 
+  createObj = (value) => {
+    const uuidv4 = require('uuid/v4');
+    let id = uuidv4();
+    let obj = { id: id, value: value};
+    return obj;
+  }
+
   handleUpParent = () => {
-    this.props.addCounts(1)
+    this.props.addCounts(1,this.createObj(0))
   }
 
   handleDownParent = () => {
@@ -29,7 +36,7 @@ class App extends React.Component {
   handleChangeParent = (e) => {
     let distance = e.target.value - this.props.todos.arr.length
     if (distance > 0) {
-      this.props.addCounts(distance)
+      this.props.addCounts(distance,this.createObj(0))
     } else {
       this.props.subCounts(distance * -1)
     }
@@ -55,12 +62,12 @@ class App extends React.Component {
             this.props.todos.arr.map((item, index) => (
               <div className="form-group" key={ index }>
                 <label>Index { index }</label>
-                <ControlSize key={ index} 
-                  value={ item }
-                  onTodoChange={(e) => { this.props.updateCount(index, e.target.value) }}
-                  up={() => { this.props.updateCount(index, item + index + 1) }}
-                  down={() => { this.props.updateCount(index, item - index -1) }}
-                  delete={() => { this.props.deleteCount(index) }}
+                <ControlSize key = { item.value } 
+                  value          = { item.value }
+                  onTodoChange   = {(e) => { this.props.updateCount(item.id, e.target.value) }}
+                  up             = {() => { this.props.updateCount(item.id, item.value + index + 1) }}
+                  down           = {() => { this.props.updateCount(item.id, item.value - index -1) }}
+                  delete         = {() => { this.props.deleteCount(item.id) }}
                 />
               </div>
             ))

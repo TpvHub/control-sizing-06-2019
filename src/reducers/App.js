@@ -7,18 +7,16 @@ var defaultState = {
 var app = (state = defaultState, action) => {
     switch (action.type) {
         case types.ADD_COUNTS: {
-            const amount = action.amount
+            const obj = action.obj;
+            const amount = action.amount;
             return {
                 ...state,
-                arr: [
-                    ...state.arr,
-                    ...Array(amount).fill(0)
-                ]
+                arr: state.arr.concat(Array(amount).fill(obj))
             }
         }
 
         case types.SUB_COUNTS: {
-            const amount = action.amount
+            const amount = action.amount;
             return {
                 ...state,
                 arr: state.arr.slice(0, amount * -1)
@@ -26,20 +24,23 @@ var app = (state = defaultState, action) => {
         }
 
         case types.DELETE_COUNT: {
-            console.log(action)
-            const _index = action.index
+            const _id = action.id
             return {
                 ...state,
-                arr: state.arr.filter((item, index) => _index !== index)
+                arr: state.arr.filter((item) => _id !== item.id)
             }
         }
 
         case types.UPDATE_COUNT: {
-            const _index = action.index
-            const newValue = action.newValue
+            const _id = action.id
+            const newValue = action.newValue;
+            console.log("id"+newValue);
             return {
                 ...state,
-                arr: state.arr.map((item, index) => _index === index ? newValue : item)
+                arr: state.arr.map((item, index) => {
+                    _id === item.id ? item.value = newValue : item;
+                    return item;
+                })
             }
         }
 

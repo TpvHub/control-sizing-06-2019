@@ -1,23 +1,24 @@
 import * as types from '../constants/ActionTypesApp';
 
-export const addCounts = (amount) => ({
+export const addCounts = (amount, obj) => ({
     type: types.ADD_COUNTS,
-    amount 
+    amount,
+    obj 
 })
 
 export const subCounts = (amount) => ({
     type: types.SUB_COUNTS,
-    amount 
+    amount
 })
 
-export const deleteCount = (index) => ({
+export const deleteCount = (id) => ({
     type: types.DELETE_COUNT,
-    index
+    id
 })
 
-export const updateCount = (index, newValue) => ({
+export const updateCount = (id, newValue) => ({
     type: types.UPDATE_COUNT,
-    index,
+    id,
     newValue
 })
 
