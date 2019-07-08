@@ -38,6 +38,7 @@ export const getCountRequest = () => {
     return dispatch => {
         callAPI('counts', 'GET', null).then(res => {
             return dispatch(getData(res.data))
+            //console.log(res)
         })
     }
 }
@@ -48,9 +49,10 @@ const createCount = () => {
             callAPI('counts', 'POST', {
                 // id: uuidv1(),
                 value: 0,
-                index: 0
+                //index: 0
             })
                 .then(res => {
+                    // console.log(res.data)
                     resolve(res.data)
                     //setTimeout(resolve, 200, res.data);
                 })
@@ -60,6 +62,7 @@ const createCount = () => {
 export const postCountRequest = amount => {
     return dispatch => {
         let arr = Array(amount).fill(null).map(item => createCount());
+        //console.log(arr)
         Promise.all(arr).then(values => {
             return dispatch(add(values));
         }).catch(err => console.log(err));
@@ -72,6 +75,7 @@ export const putCountRequest = (id, value) => {
             id: id,
             value: value
         }).then(res => {
+            //console.log(res);
             return dispatch(changeCount(res.data))
         })
     }
@@ -92,6 +96,7 @@ export const delMulCountRequest = data => {
         let arr = data.map((item, i) =>
             delCount(item.id)
         )
+        //console.log(arr)
         Promise.all(arr).then(results => {
             return dispatch(sub(results.length));
         });

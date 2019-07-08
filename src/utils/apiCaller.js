@@ -7,7 +7,8 @@ export default function callApi(endpoint,method = "GET", data) {
         Axios({
             method: method,
             url: `${Config.API_URL}/${endpoint}`,
-            //responseType: 'stream'
+            // responseType: 'stream',
+            contentType : 'application/json',
             data: data
         })
             .catch(err => {
