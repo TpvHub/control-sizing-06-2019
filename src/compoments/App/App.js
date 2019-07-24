@@ -10,69 +10,129 @@ import {
     updateCount,
     deleteCount
 } from "../../actions/count";
+import FormError from '../FormError/FormError';
+import FadeLoader from 'react-spinners/FadeLoader';
+
 
 class App extends React.Component {
+
     constructor(props){
         super(props);
         this.state = {
+            inputValue: this.props.count.list.length,
+            checkInput: true,
+            loading:true,
+        }
+    }
+    
+    componentWillMount = async () => {
+        await this.props.getCount();  
+        this.setState({
+            inputValue: this.props.count.list.length,
+            loading: false,
+        }); 
+    }
+
+    handleUpParent = async () => {
+        await this.props.addCounts(1);
+        this.setState({
+            inputValue: this.props.count.list.length
+        });
+    }
+
+    handleDownParent = async () => {
+        await this.props.subCounts(1);
+        this.setState({
+            inputValue: this.props.count.list.length
+        });
+    }
+
+    handleDeleteParent = async () => {
+        await this.props.subCounts(this.props.count.list.length)
+        this.setState({
+            inputValue: this.props.count.list.length
+        });
+    }
+
+    handleBlurParent = async (e) => {
+        if((e.target.value != this.props.count.list.length) && this.state.checkInput){
+            let distance = e.target.value - this.props.count.list.length
+            if (distance > 0) {
+                this.setState({
+                    loading: true
+                });
+                await this.props.addCounts(distance)
+                this.setState({
+                    loading: false
+                });
+            } else {
+                this.props.subCounts(distance * -1)
+            }
         }
     }
 
-    componentWillMount = () => {
-        this.props.getCount();    
+    handleChangeInput = (e) => {
+        let value  = isNaN(parseInt(e.target.value)) ? 0 : parseInt(e.target.value);
+        this.setState({
+            inputValue: value,
+            checkInput: value > 100 ? false : true
+        });
     }
 
-    handleUpParent = () => {
-        this.props.addCounts(1)
-    }
-
-    handleDownParent = () => {
-        this.props.subCounts(1)
-    }
-
-    handleDeleteParent = () => {
-        this.props.subCounts(this.props.count.list.length)
-    }
-
-    handleChangeParent = (e) => {
-        let distance = e.target.value - this.props.count.list.length
-        if (distance > 0) {
-            this.props.addCounts(distance)
-        } else {
-            this.props.subCounts(distance * -1)
-        }
+    handleDeleteChildren = async (id) => {
+        await this.props.deleteCount(id);
+        this.setState({
+            inputValue: this.props.count.list.length
+        });
     }
 
     render() {
+
         return (
             <div className="container">
                 <div className="col-xs-6 col-sm-6 col-md-8 col-lg-6">
                     <div className="form-group">
                         <label>Quantity</label> 
                         <ControlSize
-                            value={this.props.count.list.length}
-                            onTodoChange={this.handleChangeParent}
+                            value={ this.state.inputValue}
+                            onTodoChange={this.handleChangeInput}
+                            onTodoBlur={this.handleBlurParent}
                             up={this.handleUpParent}
                             down={this.handleDownParent}
                             delete={this.handleDeleteParent}
+                            disabled={this.state.loading}
+                        />
+                        <FormError
+                            isHidden = {this.state.checkInput}
                         />
                     </div>
                 </div>
+  
                 <div className="col-xs-6 col-sm-6 col-md-8 col-lg-6">
+ 
                     {
                         this.props.count.list.map((item, index) => (
                             <div className="form-group" key={index}>
                                 <label>Index {index}</label>
                                 <ControlSize key={item.value}
                                     value={item.value}
+                                    onTodoBlur={this.handleChangeInput}
                                     onTodoChange={(e) => { this.props.updateCount(item.id, isNaN(parseInt(e.target.value)) ? 0 : parseInt(e.target.value)) }}
                                     up={() => { this.props.updateCount(item.id, item.value + index + 1) }}
                                     down={() => { this.props.updateCount(item.id, item.value - index - 1) }}
-                                    delete={() => { this.props.deleteCount(item.id) }}
+                                    delete={() => { this.handleDeleteChildren(item.id) }}
                                 />
                             </div>
                         ))
                     }
+                    <div className={this.state.loading ? 'sweet-loading': 'hidden'}>
+                        <FadeLoader
+                            sizeUnit={"px"}
+                            size={100}
+                            color={'red'}
+                            loading={this.state.loading}
+                        />
+                    </div>                    
                 </div>
             </div>
         );

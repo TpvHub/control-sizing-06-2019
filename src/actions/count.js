@@ -1,13 +1,36 @@
 import { actionTypes } from "./actionTypes"
 import { request } from "../config/api"
 
+// actions
+const saveCounts = (data) => ({
+    type: actionTypes.ACTION_FETCHING_DATA,
+    data: data
+})
+
+const upCount = (data) => ({
+    type: actionTypes.ACTION_ADD_DATA,
+    data: data,
+})
+
+const downCount = (data) => ({
+    type: actionTypes.ACTION_SUB_DATA,
+    data: data,
+})
+
+const changeCount = (data) => ({
+    type: actionTypes.ACTION_UPDATE_DATA,
+    data: data,
+})
+
+const delCount = (data) => ({
+    type: actionTypes.ACTION_DELETE_ITEM,
+    data: data,   
+})
+
 export function getCount() {
     return dispatch => {
         return request().get(`control-size`).then(res => {
-            dispatch({
-                type: actionTypes.ACTION_FETCHING_DATA,
-                data: res.data.list
-            })
+            dispatch(saveCounts(res.data.list))
         }).catch(err => {
             console.log(err)
         })
@@ -20,10 +43,7 @@ export function addCounts(number) {
     }
     return dispatch => {
         return request().post(`control-size/create`, data).then(res => {
-            dispatch({
-                type: actionTypes.ACTION_ADD_DATA,
-                data: res.data.listNew,
-            })
+            dispatch(upCount(res.data.listNew))
         }).catch(err => {
             console.log(err)
         })
@@ -36,10 +56,7 @@ export function subCounts(number) {
     }
     return dispatch => {
         return request().post(`control-size/down`, data).then(res => {
-            dispatch({
-                type: actionTypes.ACTION_SUB_DATA,
-                data: res.data.number,
-            })
+            dispatch(downCount(res.data.number))
         }).catch(err => {
             console.log(err)
         })
@@ -52,10 +69,7 @@ export function updateCount(id,value) {
     }
     return dispatch => {
         return request().put(`control-size/detail/${id}`, data).then(res => {
-            dispatch({
-                type: actionTypes.ACTION_UPDATE_DATA,
-                data: res.data.content,
-            })
+            dispatch(changeCount(res.data.content))
         }).catch(err => {
             console.log(err)
         })
@@ -65,10 +79,7 @@ export function updateCount(id,value) {
 export function deleteCount(id) {
     return dispatch => {
         return request().delete(`control-size/detail/${id}`).then(res => {
-            dispatch({
-                type: actionTypes.ACTION_DELETE_ITEM,
-                data: id,
-            })
+            dispatch(delCount(id))
         }).catch(err => {
             console.log(err)
         })
@@ -80,4 +91,5 @@ export default {
     addCounts,
     subCounts,
     updateCount,
+    deleteCount,
 }
