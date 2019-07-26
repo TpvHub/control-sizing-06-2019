@@ -17,7 +17,7 @@ const downCount = (data) => ({
     data: data,
 })
 
-const changeCount = (data) => ({
+export const changeCount = (data) => ({
     type: actionTypes.ACTION_UPDATE_DATA,
     data: data,
 })
