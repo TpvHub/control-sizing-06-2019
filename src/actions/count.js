@@ -31,6 +31,7 @@ export function getCount() {
     return dispatch => {
         return request().get(`control-size`).then(res => {
             dispatch(saveCounts(res.data.list))
+            return res.data.list
         }).catch(err => {
             console.log(err)
         })
@@ -43,9 +44,11 @@ export function addCounts(number) {
     }
     return dispatch => {
         return request().post(`control-size/create`, data).then(res => {
-            dispatch(upCount(res.data.listNew))
+            dispatch(upCount(res.data.listNew));
+            return true;
         }).catch(err => {
-            console.log(err)
+            console.log(err);
+            return false;
         })
     }
 }
@@ -56,9 +59,11 @@ export function subCounts(number) {
     }
     return dispatch => {
         return request().post(`control-size/down`, data).then(res => {
-            dispatch(downCount(res.data.number))
+            dispatch(downCount(res.data.number));
+            return true;
         }).catch(err => {
-            console.log(err)
+            console.log(err);
+            return false;
         })
     }    
 }
@@ -69,9 +74,11 @@ export function updateCount(id,value) {
     }
     return dispatch => {
         return request().put(`control-size/detail/${id}`, data).then(res => {
-            dispatch(changeCount(res.data.content))
+            dispatch(changeCount(res.data.content));
+            return true;
         }).catch(err => {
-            console.log(err)
+            console.log(err);
+            return false;
         })
     } 
 }
@@ -80,8 +87,10 @@ export function deleteCount(id) {
     return dispatch => {
         return request().delete(`control-size/detail/${id}`).then(res => {
             dispatch(delCount(id))
+            return true;
         }).catch(err => {
-            console.log(err)
+            console.log(err);
+            return false;
         })
     } 
 }
