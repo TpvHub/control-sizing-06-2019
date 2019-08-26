@@ -1,54 +1,72 @@
 import React from "react";
 import "./app.css";
+import Element from "./element";
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      number: 50
+      number: "",
+      fields: {},
+      errors: {}
     };
   }
 
+  handleValidation() {
+    let fields = this.state.fields;
+    let errors = {};
+    let formIsValid = true;
+    if (!fields["name"]) {
+      formIsValid = false;
+      errors["name"] = "Cannot be empty";
+    }
+    if (typeof fields["name"] !== "undefined") {
+      if (fields["name"].match(/^[a-zA-Z]+$/)) {
+        formIsValid = false;
+        errors["name"] = "Only Number";
+      }
+    }
+    this.setState({ errors: errors });
+    return formIsValid;
+  }
+
+  handleChange = (field, e) => {
+    let fields = this.state.fields;
+    fields[field] = e.target.value;
+    if (this.handleValidation())
+      this.setState({ number: Number(fields[field]) });
+    this.setState({ fields });
+  };
+
   increaseItem = () => {
-    this.setState(prevState => {
-      if (prevState.number >= 0) {
+    if (this.handleValidation()) {
+      this.setState(prevState => {
         return {
           number: prevState.number + 1
         };
-      } else {
-        return null;
-      }
-    });
+      });
+    }
   };
-  
+
   decreaseItem = () => {
-    this.setState(prevState => {
-      if (prevState.number > 0) {
+    if (this.handleValidation()) {
+      this.setState(prevState => {
         return {
           number: prevState.number - 1
         };
-      } else {
-        return null;
-      }
-    });
-  };
-
-  handleChange = event => {
-    this.setState({ number: Number(event.target.value) });
+      });
+    }
   };
 
   render() {
     return (
-      <div>
-        <button className="add" onClick={this.increaseItem}>+</button>
-        <input
-          className="input_number"
-          type="number"
-          value={this.state.number}
-          onChange={this.handleChange}
-        />
-        <button className="sub" onClick={this.decreaseItem}>-</button>
-      </div>
+      <Element
+        decreaseItem={this.decreaseItem}
+        increaseItem={this.increaseItem}
+        value={this.state.number}
+        handle={this.handleChange.bind(this, "name")}
+        errors={this.state.errors["name"]}
+      />
     );
   }
 }
