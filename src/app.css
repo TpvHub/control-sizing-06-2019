@@ -1,5 +1,5 @@
 
-.btn-add,.btn-sub{
+.btn-counter{
     font-size: 23px;
     height: 50px;
     width: 50px;
@@ -12,6 +12,6 @@
     height: 50px;
     text-align: center
 }
-.error{
+.errorMessage{
     color: red;
 }

@@ -1,6 +1,6 @@
 import React from "react";
 import "./app.css";
-import Element from "./element";
+import Counter from "./counter";
 
 class App extends React.Component {
   constructor(props) {
@@ -21,7 +21,8 @@ class App extends React.Component {
       errors["name"] = "Cannot be empty";
     }
     if (typeof fields["name"] !== "undefined") {
-      if (fields["name"].match(/^[a-zA-Z]+$/)) {
+      // match(/^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$/)
+      if (fields["name"].match(/^(?=.*[a-zA-Z])([a-zA-Z0-9]+)$/)) {
         formIsValid = false;
         errors["name"] = "Only Number";
       }
@@ -31,6 +32,14 @@ class App extends React.Component {
   }
 
   handleChange = (field, e) => {
+    let fields = this.state.fields;
+    fields[field] = e.target.value;
+    if (this.handleValidation())
+      this.setState({ number: Number(fields[field]) });
+    this.setState({ fields });
+  };
+
+  blurInputNumber = (field, e) => {
     let fields = this.state.fields;
     fields[field] = e.target.value;
     if (this.handleValidation())
@@ -60,12 +69,13 @@ class App extends React.Component {
 
   render() {
     return (
-      <Element
+      <Counter
         decreaseItem={this.decreaseItem}
         increaseItem={this.increaseItem}
-        value={this.state.number}
-        handle={this.handleChange.bind(this, "name")}
-        errors={this.state.errors["name"]}
+        valueInputNumber={this.state.number}
+        handleChangeInput={this.handleChange.bind(this, "name")}
+        blurInputNumber={this.blurInputNumber.bind(this, "name")}
+        errorMessage={this.state.errors["name"]}
       />
     );
   }
