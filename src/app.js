@@ -6,7 +6,7 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      number: "",
+      number: 0,
       fields: {},
       errors: {}
     };
@@ -25,6 +25,7 @@ class App extends React.Component {
       if (fields["name"].match(/^(?=.*[a-zA-Z])([a-zA-Z0-9]+)$/)) {
         formIsValid = false;
         errors["name"] = "Only Number";
+        this.setState({ number: "" });
       }
     }
     this.setState({ errors: errors });
@@ -32,11 +33,7 @@ class App extends React.Component {
   }
 
   handleChange = (field, e) => {
-    let fields = this.state.fields;
-    fields[field] = e.target.value;
-    if (this.handleValidation())
-      this.setState({ number: Number(fields[field]) });
-    this.setState({ fields });
+    this.setState({ number: e.target.value });
   };
 
   blurInputNumber = (field, e) => {
@@ -44,27 +41,22 @@ class App extends React.Component {
     fields[field] = e.target.value;
     if (this.handleValidation())
       this.setState({ number: Number(fields[field]) });
-    this.setState({ fields });
   };
 
   increaseItem = () => {
-    if (this.handleValidation()) {
-      this.setState(prevState => {
-        return {
-          number: prevState.number + 1
-        };
-      });
-    }
+    this.setState(prevState => {
+      return {
+        number: prevState.number + 1
+      };
+    });
   };
 
   decreaseItem = () => {
-    if (this.handleValidation()) {
-      this.setState(prevState => {
-        return {
-          number: prevState.number - 1
-        };
-      });
-    }
+    this.setState(prevState => {
+      return {
+        number: prevState.number - 1
+      };
+    });
   };
 
   render() {
@@ -82,3 +74,4 @@ class App extends React.Component {
 }
 
 export default App;
+
