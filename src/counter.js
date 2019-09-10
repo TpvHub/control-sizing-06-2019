@@ -1,24 +1,5 @@
 import React from "react";
-
-// class Counter extends React.Component {
-//     render() {
-//         return (
-//           <div>
-//             <button className="btn-sub" onClick={this.props.decreaseItem}>-</button>
-//             <input
-//               placeholder="Please input Number"
-//               className="input-number"
-//               value={this.props.value}
-//               type='text'
-//               onChange={this.props.handleChangeInput}
-//             />
-//             <button className="btn-add" onClick={this.props.increaseItem}>+</button>
-//             <br/>
-//             <span className="errorMessage">{this.props.errorMessage}</span>
-//           </div>
-//         );
-//       }
-// }
+import PropTypes from 'prop-types';
 
 function Counter(props) {
     return (
@@ -40,4 +21,33 @@ function Counter(props) {
     );
 }
 
+Counter.propTypes = {
+  decreaseItem: PropTypes.func,
+  increaseItem: PropTypes.func,
+  handleChangeInput: PropTypes.func,
+  blurInputNumber: PropTypes.func,
+  valueInputNumber: PropTypes.string,
+  errorMessage: PropTypes.string
+};
+
 export default Counter;
+
+// class Counter extends React.Component {
+//     render() {
+//         return (
+//           <div>
+//             <button className="btn-sub" onClick={this.props.decreaseItem}>-</button>
+//             <input
+//               placeholder="Please input Number"
+//               className="input-number"
+//               value={this.props.value}
+//               type='text'
+//               onChange={this.props.handleChangeInput}
+//             />
+//             <button className="btn-add" onClick={this.props.increaseItem}>+</button>
+//             <br/>
+//             <span className="errorMessage">{this.props.errorMessage}</span>
+//           </div>
+//         );
+//       }
+// }

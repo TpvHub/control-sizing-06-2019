@@ -13,10 +13,10 @@ class App extends React.Component {
   }
 
   updateValueCounter = (index,value) => {
-    const counter = this.state.counters;
-    counter[index].value = value;
+    const counters = this.state.counters;
+    counters[index].value = value;
     this.setState({
-      counter
+      counters
     });
   }
 
@@ -71,7 +71,7 @@ class App extends React.Component {
               decreaseItem={e => {this.decreaseItem(e, i);}}
               handleChangeInput={e => {this.handleChange(e, i);}}
               blurInputNumber={e => {this.blurInputNumber(e, i);}}
-              valueInputNumber={this.state.counters[i].value}
+              valueInputNumber={counter.value}
               errorMessage={this.state.errors[i]}
             />
           );
