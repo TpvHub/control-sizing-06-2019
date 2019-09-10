@@ -35,6 +35,7 @@ function Counter(props) {
         <button className="btn-counter" onClick={props.increaseItem}>+</button>
         <br/>
         <span className="errorMessage">{props.errorMessage}</span>
+        <br/>
       </div>
     );
 }
