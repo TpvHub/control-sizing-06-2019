@@ -6,19 +6,21 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      counters: [{ id: 0, value: 13 },{ id: 1, value: 3 },{ id: 2, value: 1 },{ id: 3, value: 10 }],
+      counters: [
+        { id: 0, value: 0 },{ id: 1, value: 1 },{ id: 2, value: 2 },{ id: 3, value: 3 },{ id: 4, value: 4 },{ id: 5, value: 5 },{ id: 6, value: 6 },{ id: 7, value: 7 }
+      ],
       fields: {},
       errors: {}
     };
   }
 
-  updateValueCounter = (index,value) => {
+  updateValueCounter = (index, value) => {
     const counters = this.state.counters;
     counters[index].value = value;
     this.setState({
       counters
     });
-  }
+  };
 
   handleValidation(index) {
     let fields = this.state.fields;
@@ -40,48 +42,157 @@ class App extends React.Component {
   }
 
   handleChange = (e, index) => {
-    this.updateValueCounter(index,e.target.value)
+    // this.updateValueCounter(index,e.target.value);
+    let fields = this.state.fields;
+    fields[index] = e.target.value;
+    if (this.handleValidation(index))
+      this.updateValueCounter(index, Number(fields[index]));
+    else this.updateValueCounter(index, 0);
   };
 
   blurInputNumber = (e, index) => {
     let fields = this.state.fields;
     fields[index] = e.target.value;
     if (this.handleValidation(index))
-      this.updateValueCounter(index, Number(fields[index]))
+      this.updateValueCounter(index, Number(fields[index]));
     else this.updateValueCounter(index, 0);
   };
 
   increaseItem = (e, index) => {
-    const counter = this.state.counters;
-    this.updateValueCounter(index,counter[index].value + 1)
+    const counters = this.state.counters;
+    this.updateValueCounter(index, counters[index].value + 1);
   };
 
   decreaseItem = (e, index) => {
-    const counter = this.state.counters;
-    this.updateValueCounter(index,counter[index].value - 1)
+    const counters = this.state.counters;
+    this.updateValueCounter(index, counters[index].value - 1);
   };
 
   render() {
+    const counter = this.state.counters
+      .slice(1, this.state.counters[0].value+1)
+      .map((counter, i) => {
+        return (
+          <Counter key={i}
+            increaseItem={e => {this.increaseItem(e, i+1);}}
+            decreaseItem={e => {this.decreaseItem(e, i+1);}}
+            handleChangeInput={e => {this.handleChange(e, i+1);}}
+            blurInputNumber={e => {this.blurInputNumber(e, i+1);}}
+            valueInputNumber={counter.value}
+            errorMessage={this.state.errors[i+1]}
+          />
+        );
+      })
     return (
       <div>
-        {this.state.counters.map((counter, i) => {
-          return (
-            <Counter key={i}
-              increaseItem={e => {this.increaseItem(e, i);}}
-              decreaseItem={e => {this.decreaseItem(e, i);}}
-              handleChangeInput={e => {this.handleChange(e, i);}}
-              blurInputNumber={e => {this.blurInputNumber(e, i);}}
-              valueInputNumber={counter.value}
-              errorMessage={this.state.errors[i]}
-            />
-          );
-        })}
+        <Counter
+          increaseItem={e => {
+            this.increaseItem(e, 0);
+          }}
+          decreaseItem={e => {
+            this.decreaseItem(e, 0);
+          }}
+          handleChangeInput={e => {
+            this.handleChange(e, 0);
+          }}
+          blurInputNumber={e => {
+            this.blurInputNumber(e, 0);
+          }}
+          valueInputNumber={this.state.counters[0].value}
+          errorMessage={this.state.errors[0]}
+        />
+        {counter}
       </div>
     );
   }
 }
 
 export default App;
+
+// import React from "react";
+// import "./app.css";
+// import Counter from "./counter";
+
+// class App extends React.Component {
+//   constructor(props) {
+//     super(props);
+//     this.state = {
+//       counters: [{ id: 0, value: 13 },{ id: 1, value: 3 },{ id: 2, value: 1 },{ id: 3, value: 10 }],
+//       fields: {},
+//       errors: {}
+//     };
+//   }
+
+//   updateValueCounter = (index,value) => {
+//     const counters = this.state.counters;
+//     counters[index].value = value;
+//     this.setState({
+//       counters
+//     });
+//   }
+
+//   handleValidation(index) {
+//     let fields = this.state.fields;
+//     let errors = {};
+//     let formIsValid = true;
+//     if (!fields[index]) {
+//       formIsValid = false;
+//       errors[index] = "Cannot be empty";
+//     }
+//     if (typeof fields[index] !== "undefined") {
+//       // match(/^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$/)
+//       if (fields[index].match(/^(?=.*[a-zA-Z])([a-zA-Z0-9]+)$/)) {
+//         formIsValid = false;
+//         errors[index] = "Only Number";
+//       }
+//     }
+//     this.setState({ errors: errors });
+//     return formIsValid;
+//   }
+
+//   handleChange = (e, index) => {
+//     this.updateValueCounter(index,e.target.value)
+//   };
+
+//   blurInputNumber = (e, index) => {
+//     let fields = this.state.fields;
+//     fields[index] = e.target.value;
+//     if (this.handleValidation(index))
+//       this.updateValueCounter(index, Number(fields[index]))
+//     else this.updateValueCounter(index, 0);
+//   };
+
+//   increaseItem = (e, index) => {
+//     const counter = this.state.counters;
+//     this.updateValueCounter(index,counter[index].value + 1)
+//   };
+
+//   decreaseItem = (e, index) => {
+//     const counter = this.state.counters;
+//     this.updateValueCounter(index,counter[index].value - 1)
+//   };
+
+//   render() {
+//     return (
+      // <div>
+      //   {this.state.counters.map((counter, i) => {
+      //     return (
+      //       <Counter key={i}
+      //         increaseItem={e => {this.increaseItem(e, i);}}
+      //         decreaseItem={e => {this.decreaseItem(e, i);}}
+      //         handleChangeInput={e => {this.handleChange(e, i);}}
+      //         blurInputNumber={e => {this.blurInputNumber(e, i);}}
+      //         valueInputNumber={counter.value}
+      //         errorMessage={this.state.errors[i]}
+      //       />
+      //     );
+      //   })}
+      // </div>
+//     );
+//   }
+// }
+
+// export default App;
 
 // import React from "react";
 // import "./app.css";
@@ -263,5 +374,3 @@ export default App;
 // }
 
 // export default App;
-
-
