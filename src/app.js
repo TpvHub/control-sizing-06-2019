@@ -5,10 +5,18 @@ import Counter from "./counter";
 class App extends React.Component {
   constructor(props) {
     super(props);
+    const initialStateOfList = [
+      { id: 0, value: 0 },
+      { id: 1, value: 1 },
+      { id: 2, value: 2 },
+      { id: 3, value: 3 },
+      { id: 4, value: 4 },
+      { id: 5, value: 5 },
+      { id: 6, value: 6 },
+      { id: 7, value: 7 }
+    ];
     this.state = {
-      counters: [
-        { id: 0, value: 0 },{ id: 1, value: 1 },{ id: 2, value: 2 },{ id: 3, value: 3 },{ id: 4, value: 4 },{ id: 5, value: 5 },{ id: 6, value: 6 },{ id: 7, value: 7 }
-      ],
+      counters: initialStateOfList,
       fields: {},
       errors: {}
     };
@@ -60,29 +68,46 @@ class App extends React.Component {
 
   increaseItem = (e, index) => {
     const counters = this.state.counters;
-    this.updateValueCounter(index, counters[index].value + 1);
+    if (index === 0) this.updateValueCounter(index, counters[index].value + 1);
+    this.updateValueCounter(index, counters[index].value + index);
   };
 
   decreaseItem = (e, index) => {
     const counters = this.state.counters;
-    this.updateValueCounter(index, counters[index].value - 1);
+    if (index === 0) {
+      this.updateValueCounter(index, counters[index].value - 1);
+      this.updateValueCounter(
+        this.state.counters[0].value + 1,
+        this.state.counters[0].value + 1
+      );
+    }
+    this.updateValueCounter(index, counters[index].value - index);
   };
 
   render() {
     const counter = this.state.counters
-      .slice(1, this.state.counters[0].value+1)
+      .slice(1, this.state.counters[0].value + 1)
       .map((counter, i) => {
         return (
-          <Counter key={i}
-            increaseItem={e => {this.increaseItem(e, i+1);}}
-            decreaseItem={e => {this.decreaseItem(e, i+1);}}
-            handleChangeInput={e => {this.handleChange(e, i+1);}}
-            blurInputNumber={e => {this.blurInputNumber(e, i+1);}}
+          <Counter
+            key={i}
+            increaseItem={e => {
+              this.increaseItem(e, i + 1);
+            }}
+            decreaseItem={e => {
+              this.decreaseItem(e, i + 1);
+            }}
+            handleChangeInput={e => {
+              this.handleChange(e, i + 1);
+            }}
+            blurInputNumber={e => {
+              this.blurInputNumber(e, i + 1);
+            }}
             valueInputNumber={counter.value}
-            errorMessage={this.state.errors[i+1]}
+            errorMessage={this.state.errors[i + 1]}
           />
         );
-      })
+      });
     return (
       <div>
         <Counter
@@ -174,20 +199,20 @@ export default App;
 
 //   render() {
 //     return (
-      // <div>
-      //   {this.state.counters.map((counter, i) => {
-      //     return (
-      //       <Counter key={i}
-      //         increaseItem={e => {this.increaseItem(e, i);}}
-      //         decreaseItem={e => {this.decreaseItem(e, i);}}
-      //         handleChangeInput={e => {this.handleChange(e, i);}}
-      //         blurInputNumber={e => {this.blurInputNumber(e, i);}}
-      //         valueInputNumber={counter.value}
-      //         errorMessage={this.state.errors[i]}
-      //       />
-      //     );
-      //   })}
-      // </div>
+// <div>
+//   {this.state.counters.map((counter, i) => {
+//     return (
+//       <Counter key={i}
+//         increaseItem={e => {this.increaseItem(e, i);}}
+//         decreaseItem={e => {this.decreaseItem(e, i);}}
+//         handleChangeInput={e => {this.handleChange(e, i);}}
+//         blurInputNumber={e => {this.blurInputNumber(e, i);}}
+//         valueInputNumber={counter.value}
+//         errorMessage={this.state.errors[i]}
+//       />
+//     );
+//   })}
+// </div>
 //     );
 //   }
 // }

@@ -26,7 +26,7 @@ Counter.propTypes = {
   increaseItem: PropTypes.func,
   handleChangeInput: PropTypes.func,
   blurInputNumber: PropTypes.func,
-  valueInputNumber: PropTypes.string,
+  valueInputNumber: PropTypes.number,
   errorMessage: PropTypes.string
 };
 
