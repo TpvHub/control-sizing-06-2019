@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 function Counter(props) {
     return (
       <div>
-        <button className="btn-counter" onClick={props.decreaseItem}>-</button>
+        <button className={props.active ? 'btn-counter active' : 'btn-counter'} onClick={props.decreaseItem}>-</button>
         <input
           type='text'
           placeholder="Please input Number"
@@ -13,7 +13,7 @@ function Counter(props) {
           onChange={props.handleChangeInput}
           onBlur={props.blurInputNumber}
         />
-        <button className="btn-counter" onClick={props.increaseItem}>+</button>
+        <button className={props.active ? 'btn-counter active' : 'btn-counter'} onClick={props.increaseItem}>+</button>
         <br/>
         <span className="errorMessage">{props.errorMessage}</span>
         <br/>
