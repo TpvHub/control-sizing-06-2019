@@ -1,86 +1,140 @@
 import React from "react";
 import "./app.css";
 import Counter from "./counter";
+const uuidv4 = require("uuid/v4");
+const MAX_COUNTERS = 20;
 
 class App extends React.Component {
   constructor(props) {
     super(props);
-    const initialStateOfList = [
-      { id: 0, value: 0 },
-      { id: 1, value: 1 },{ id: 2, value: 2 },{ id: 3, value: 3 },{ id: 4, value: 4 },{ id: 5, value: 5 },
-      { id: 6, value: 6 },{ id: 7, value: 7 },{ id: 8, value: 8 },{ id: 9, value: 9 },{ id: 10, value: 10 }
-    ];
     this.state = {
-      counters: initialStateOfList,
+      counters: [{ id: 0, value: 0 }],
       errors: []
     };
   }
 
   updateValueCounter = (id, value) => {
-    const { counters } = this.state;
-    if(id<=counters.length-1){
-      counters[id].value = value;
-      this.setState({
-        counters
+    this.setState(prevState => {
+      prevState.counters = prevState.counters.map(counter => {
+        if (counter.id === id) {
+          return {
+            ...counter,
+            value: value
+          };
+        }
+        return counter;
       });
-    }
+    });
   };
 
-  handleValidation(index) {
-    let counters = this.state.counters;
+  handleValidation(id) {
     let errors = [];
-    let formIsValid = true;
-    if (!counters[index].value) {
-      formIsValid = false;
-      errors[index] = "Cannot be empty";
-    }
-    if (typeof counters[index].value !== "undefined") {
-      if (isNaN(counters[index].value)) {
-        formIsValid = false;
-        errors[index] = "Only Number";
-      } else if (index===0 && counters[index].value >= counters.length) {
-        errors[index] = "Maximum counter is 10";
-        this.updateValueCounter(index,counters.length-1)
+    this.state.counters.map(counter => {
+      if (counter.id === id) {
+        if (!counter.value) {
+          errors[id] = "Cannot be empty";
+        }
+        if (typeof counter.value !== "undefined") {
+          if (isNaN(counter.value)) {
+            errors[id] = "Only Number";
+            this.updateValueCounter(id, 0);
+          } else if (counter.id === 0 && counter.value > MAX_COUNTERS) {
+            errors[id] = `Maximum Number is ${MAX_COUNTERS}`;
+          }
+        }
+        this.setState({ errors: errors });
       }
-    }
-    this.setState({ errors: errors });
-    return formIsValid;
+      return counter;
+    });
   }
 
-  handleChange = (e, index) => {
-    // this.updateValueCounter(index,(e.target.value));
-    let counters = this.state.counters;
-    counters[index].value = e.target.value;
-    if (this.handleValidation(index)) {
-      this.updateValueCounter(index, Number(counters[index].value));
-    } 
-    else this.updateValueCounter(index, 0);
+  handleChange = (e, id) => {
+    this.state.counters.map(async counter => {
+      if (counter.id === id) {
+        if (id === 0) {
+          await this.updateValueCounter(id, Number(e.target.value));
+          this.handleValidation(id);
+          this.state.counters.splice(1, this.state.counters.length);
+          if (this.state.counters[0].value <= MAX_COUNTERS) {
+            for (let i = 1; i <= this.state.counters[0].value; i++) {
+              const new_value = {
+                id: uuidv4(),
+                value: i
+              };
+              this.setState(prevState => ({
+                counters: [...prevState.counters, new_value]
+              }));
+            }
+          }
+        } else {
+          await this.updateValueCounter(id, Number(e.target.value));
+          this.handleValidation(id);
+          this.setState(prevState => ({
+            counters: [...prevState.counters]
+          }));
+        }
+      }
+      return counter;
+    });
   };
 
-  blurInputNumber=(e, index)=>{
+  blurInputNumber = (e, id) => {
     this.setState({ errors: "" });
-  }
-
-  increaseItem = (e, index) => {
-    let counters = this.state.counters;
-    if (index === 0) {
-      this.updateValueCounter(index, counters[index].value + 1);
-      this.handleValidation(index)
-    }
-    this.updateValueCounter(index, counters[index].value + index);
   };
 
-  decreaseItem = (e, index) => {
-    let counters = this.state.counters;
-    if (index === 0) {
-      this.setState({ errors: "" });
-      this.updateValueCounter(index, counters[index].value - 1);
-    }
-    this.updateValueCounter(index, counters[index].value - index);
-    this.updateValueCounter(
-      this.state.counters[0].value + 1,
-      this.state.counters[0].value + 1
-    );
+  increaseItem = (e, id) => {
+    this.state.counters.map(counter => {
+      if (counter.id === id) {
+        if (id === 0) {
+          if (this.state.counters.length <= MAX_COUNTERS) {
+            this.updateValueCounter(id, this.state.counters[0].value + 1);
+            const new_value = {
+              id: uuidv4(),
+              value: this.state.counters[0].value + 1
+            };
+            this.setState(prevState => ({
+              counters: [...prevState.counters, new_value]
+            }));
+          } else {
+            let errors = [];
+            errors[id] = `Maximum Number is ${MAX_COUNTERS}`;
+            this.setState({ errors: errors });
+            this.updateValueCounter(0, MAX_COUNTERS);
+          }
+        } else {
+          let index = this.state.counters.findIndex(x => x.id === id);
+          this.updateValueCounter(id, counter.value + index);
+          this.setState(prevState => ({
+            counters: [...prevState.counters]
+          }));
+        }
+      }
+      return counter;
+    });
+  };
+
+  decreaseItem = (e, id) => {
+    this.state.counters.map(counter => {
+      if (counter.id === id) {
+        if (id === 0) {
+          if (counter.value === 0) this.updateValueCounter(0, 0);
+          else {
+            this.updateValueCounter(id, counter.value - 1);
+            this.state.counters.splice(this.state.counters[0].value, 1);
+            this.setState(prevState => ({
+              counters: [...prevState.counters]
+            }));
+          }
+        } else {
+          let index = this.state.counters.findIndex(x => x.id === id);
+          this.updateValueCounter(id, counter.value - index);
+          this.setState(prevState => ({
+            counters: [...prevState.counters]
+          }));
+        }
+      }
+      return counter;
+    });
   };
 
   render() {
@@ -91,22 +145,23 @@ class App extends React.Component {
           <Counter
             key={i}
             increaseItem={e => {
-              this.increaseItem(e, i + 1);
+              this.increaseItem(e, counter.id);
             }}
             decreaseItem={e => {
-              this.decreaseItem(e, i + 1);
+              this.decreaseItem(e, counter.id);
             }}
             handleChangeInput={e => {
-              this.handleChange(e, i + 1);
+              this.handleChange(e, counter.id);
             }}
             blurInputNumber={e => {
-              this.blurInputNumber(e, i + 1);
+              this.blurInputNumber(e, counter.id);
             }}
             valueInputNumber={counter.value}
-            errorMessage={this.state.errors[i + 1]}
+            errorMessage={this.state.errors[counter.id]}
           />
         );
       });
+
     return (
       <div>
         <Counter
