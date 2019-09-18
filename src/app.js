@@ -27,6 +27,16 @@ class App extends React.Component {
     });
   };
 
+  addCounter = value => {
+    const new_counter = {
+      id: uuidv4(),
+      value: value
+    };
+    this.setState(prevState => ({
+      counters: [...prevState.counters, new_counter]
+    }));
+  };
+
   handleValidation(id) {
     let errors = [];
     this.state.counters.map(counter => {
@@ -41,11 +51,15 @@ class App extends React.Component {
           } else if (counter.id === 0 && counter.value > MAX_COUNTERS) {
             errors[id] = `Maximum Number is ${MAX_COUNTERS}`;
           }
+          if (counter.id === 0 && counter.value < 0) {
+            errors[id] = "Cannot Negative Number";
+            this.updateValueCounter(id, 0);
+          }
         }
-        this.setState({ errors: errors });
       }
       return counter;
     });
+    this.setState({ errors: errors });
   }
 
   handleChange = (e, id) => {
@@ -54,24 +68,15 @@ class App extends React.Component {
         if (id === 0) {
           await this.updateValueCounter(id, Number(e.target.value));
           this.handleValidation(id);
-          this.state.counters.splice(1, this.state.counters.length);
           if (this.state.counters[0].value <= MAX_COUNTERS) {
+            this.state.counters.splice(1, this.state.counters.length);
             for (let i = 1; i <= this.state.counters[0].value; i++) {
-              const new_value = {
-                id: uuidv4(),
-                value: i
-              };
-              this.setState(prevState => ({
-                counters: [...prevState.counters, new_value]
-              }));
+              this.addCounter(i);
             }
           }
         } else {
           await this.updateValueCounter(id, Number(e.target.value));
           this.handleValidation(id);
-          this.setState(prevState => ({
-            counters: [...prevState.counters]
-          }));
         }
       }
       return counter;
@@ -86,20 +91,11 @@ class App extends React.Component {
     this.state.counters.map(counter => {
       if (counter.id === id) {
         if (id === 0) {
-          if (this.state.counters.length <= MAX_COUNTERS) {
+          if (this.state.counters[0].value < MAX_COUNTERS) {
             this.updateValueCounter(id, this.state.counters[0].value + 1);
-            const new_value = {
-              id: uuidv4(),
-              value: this.state.counters[0].value + 1
-            };
-            this.setState(prevState => ({
-              counters: [...prevState.counters, new_value]
-            }));
+            this.addCounter(this.state.counters[0].value + 1);
           } else {
-            let errors = [];
-            errors[id] = `Maximum Number is ${MAX_COUNTERS}`;
-            this.setState({ errors: errors });
-            this.updateValueCounter(0, MAX_COUNTERS);
+            this.handleValidation(id);
           }
         } else {
           let index = this.state.counters.findIndex(x => x.id === id);
@@ -119,6 +115,7 @@ class App extends React.Component {
         if (id === 0) {
           if (counter.value === 0) this.updateValueCounter(0, 0);
           else {
+            this.handleValidation(id);
             this.updateValueCounter(id, counter.value - 1);
             this.state.counters.splice(this.state.counters[0].value, 1);
             this.setState(prevState => ({
@@ -139,51 +136,22 @@ class App extends React.Component {
 
   render() {
     const counters = this.state.counters
-      .slice(1, this.state.counters[0].value + 1)
+      .slice(0, this.state.counters[0].value + 1)
       .map((counter, i) => {
         return (
           <Counter
             key={i}
-            increaseItem={e => {
-              this.increaseItem(e, counter.id);
-            }}
-            decreaseItem={e => {
-              this.decreaseItem(e, counter.id);
-            }}
-            handleChangeInput={e => {
-              this.handleChange(e, counter.id);
-            }}
-            blurInputNumber={e => {
-              this.blurInputNumber(e, counter.id);
-            }}
+            active={i === 0 ? true : false}
+            increaseItem={e => {this.increaseItem(e, counter.id);}}
+            decreaseItem={e => {this.decreaseItem(e, counter.id);}}
+            handleChangeInput={e => {this.handleChange(e, counter.id);}}
+            blurInputNumber={e => {this.blurInputNumber(e, counter.id);}}
             valueInputNumber={counter.value}
             errorMessage={this.state.errors[counter.id]}
           />
         );
       });
-
-    return (
-      <div>
-        <Counter
-          active={true}
-          increaseItem={e => {
-            this.increaseItem(e, 0);
-          }}
-          decreaseItem={e => {
-            this.decreaseItem(e, 0);
-          }}
-          handleChangeInput={e => {
-            this.handleChange(e, 0);
-          }}
-          blurInputNumber={e => {
-            this.blurInputNumber(e, 0);
-          }}
-          valueInputNumber={this.state.counters[0].value}
-          errorMessage={this.state.errors[0]}
-        />
-        {counters}
-      </div>
-    );
+    return <div>{counters}</div>;
   }
 }
 
