@@ -48,7 +48,7 @@ class App extends React.Component {
           if (isNaN(counter.value)) {
             errors[id] = "Only Number";
             this.updateValueCounter(id, 0);
-          } else if (counter.id === 0 && counter.value > MAX_COUNTERS) {
+          } else if (counter.id === 0 && counter.value >= MAX_COUNTERS) {
             errors[id] = `Maximum Number is ${MAX_COUNTERS}`;
           }
           if (counter.id === 0 && counter.value < 0) {
@@ -92,8 +92,8 @@ class App extends React.Component {
       if (counter.id === id) {
         if (id === 0) {
           if (this.state.counters[0].value < MAX_COUNTERS) {
-            this.updateValueCounter(id, this.state.counters[0].value + 1);
-            this.addCounter(this.state.counters[0].value + 1);
+            this.updateValueCounter(id, this.state.counters.length);
+            this.addCounter(this.state.counters.length);
           } else {
             this.handleValidation(id);
           }
@@ -136,7 +136,7 @@ class App extends React.Component {
 
   render() {
     const counters = this.state.counters
-      .slice(0, this.state.counters[0].value + 1)
+      .slice(0, this.state.counters.length)
       .map((counter, i) => {
         return (
           <Counter
