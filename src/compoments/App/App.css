@@ -1,0 +1,15 @@
+.form-warning {
+    color: red;
+    margin-top: 10px;
+}
+
+.hidden { display:none; }
+
+.sweet-loading{
+    padding-top: 40px;
+}
+
+.error{
+    color: red;
+    margin-top: 10px;
+}
